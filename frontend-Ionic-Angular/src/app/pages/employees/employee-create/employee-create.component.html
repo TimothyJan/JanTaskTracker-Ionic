@@ -1,0 +1,63 @@
+<ion-card class="ion-card">
+
+  <ion-card-header class="ion-text-center">
+    <ion-card-title>
+      Add New Employee
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+      <ion-select
+        id="departmentID"
+        formControlName="departmentID"
+        placeholder="Select a Department"
+        (ionChange)="departmentSelectionChange($event)"
+        >
+        <div slot="label">Department: </div>
+        <ion-select-option *ngFor="let department of departments" [value]="department.departmentID">
+          {{ department.departmentName }}
+        </ion-select-option>
+      </ion-select>
+
+      <div *ngIf="employeeForm.get('departmentID')!.value !== -1">
+        <ion-select
+          id="roleID"
+          formControlName="roleID"
+          placeholder="Select a Role"
+          >
+          <div slot="label">Role</div>
+          <ion-select-option *ngFor="let role of roles" [value]="role.roleID">
+            {{ role.roleName }}
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <ion-input
+        id="employeeSalary"
+        type="number"
+        label="Salary: "
+        formControlName="salary"
+        placeholder="Enter Employee Salary">
+      </ion-input>
+
+      <ion-input
+        id="employeeName"
+        label="Employee Name: "
+        formControlName="name"
+        placeholder="Enter Employee Name">
+      </ion-input>
+
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="employeeForm.invalid"
+        (click)="onSubmit()">
+        Add Employee
+      </ion-button>
+
+    </form>
+  </ion-card-content>
+
+</ion-card>

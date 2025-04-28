@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Edit Project Task</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+
+    <ion-item>
+      <app-input
+        [label]="'Task'"
+        [value]="editedProjectTask.title"
+        (valueChanged)="handleTitleChange($event)">
+      </app-input>
+    </ion-item>
+
+    <ion-item>
+      <app-text-area
+        [label]="'Description'"
+        [text]="editedProjectTask.description"
+        (textChanged)="handleDescriptionChange($event)">
+      </app-text-area>
+    </ion-item>
+
+    <ion-item>
+      <app-status-selector
+        [status]="editedProjectTask.status"
+        (statusSelectedEvent)="handleStatusChange($event)">
+      </app-status-selector>
+    </ion-item>
+
+    <ion-item>
+      <app-date-selector
+        *ngIf="editedProjectTask.startDate; else startDateSelector"
+        [label]="'Start Date'"
+        [date]="editedProjectTask.startDate"
+        (dateSelected)="handleStartDateSelection($event)">
+      </app-date-selector>
+      <ng-template #startDateSelector>
+        <app-date-selector
+          [label]="'Start Date'"
+          (dateSelected)="handleStartDateSelection($event)">
+        </app-date-selector>
+      </ng-template>
+    </ion-item>
+
+    <ion-item>
+      <app-date-selector
+        *ngIf="editedProjectTask.dueDate; else dueDateSelector"
+        [label]="'Due Date'"
+        [date]="editedProjectTask.dueDate"
+        (dateSelected)="handleDueDateSelection($event)">
+      </app-date-selector>
+      <ng-template #dueDateSelector>
+        <app-date-selector
+          [label]="'Due Date'"
+          (dateSelected)="handleDueDateSelection($event)">
+        </app-date-selector>
+      </ng-template>
+    </ion-item>
+
+    <ion-item>
+      <app-assign-employees
+        [assignedEmployeeIDs]="editedProjectTask.assignedEmployeeIDs || []"
+        (employeesSelectedEvent)="handleEmployeeSelection($event)">
+      </app-assign-employees>
+    </ion-item>
+
+  </ion-list>
+</ion-content>

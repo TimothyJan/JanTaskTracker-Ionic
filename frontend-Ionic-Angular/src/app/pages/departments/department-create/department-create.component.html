@@ -1,0 +1,30 @@
+<ion-card class="ion-card">
+
+  <ion-card-header class="ion-text-center">
+    <ion-card-title>
+      Add New Department
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
+
+      <ion-input
+        id="departmentName"
+        label="Department Name"
+        formControlName="departmentName"
+        placeholder="Enter Department Name">
+      </ion-input>
+
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="departmentForm.invalid"
+        (click)="onSubmit()">
+        Add Department
+      </ion-button>
+
+    </form>
+  </ion-card-content>
+
+</ion-card>

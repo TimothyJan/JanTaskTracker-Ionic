@@ -1,0 +1,40 @@
+ion-card{
+  margin: 0px;
+  padding: 0px;
+}
+
+ion-grid{
+  margin: 0px;
+  padding: 0px;
+}
+
+ion-card-header{
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+ion-text {
+  font-size: small;
+}
+
+.status {
+  font-size: x-small;
+}
+
+ion-card-header {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: medium;
+}
+
+ion-col {
+  top: 50%;
+}
+
+ion-item {
+  --min-height: 16px;
+}
+
+.date {
+  font-size: 10px;
+}

@@ -1,0 +1,10 @@
+.flex-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  column-gap: 5%;
+}
+
+.flex-item {
+  padding: 0px;
+}

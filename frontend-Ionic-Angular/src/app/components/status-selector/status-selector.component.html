@@ -1,0 +1,9 @@
+<ion-select
+  placeholder="Status: "
+  [value]="status"
+  (ionChange)="onStatusChange($event)">
+  <div slot="label">Status: </div>
+  <ion-select-option *ngFor="let status of statuses" [value]="status">
+    {{ status }}
+  </ion-select-option>
+</ion-select>

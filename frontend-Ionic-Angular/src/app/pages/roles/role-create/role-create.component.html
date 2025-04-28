@@ -1,0 +1,40 @@
+<ion-card class="ion-card">
+
+  <ion-card-header class="ion-text-center">
+    <ion-card-title>
+      Add New Role
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+
+      <ion-select
+        id="departmentID"
+        formControlName="departmentID"
+        placeholder="Select a Department">
+        <div slot="label">Department</div>
+        <ion-select-option *ngFor="let department of departments" [value]="department.departmentID">
+          {{ department.departmentName }}
+        </ion-select-option>
+      </ion-select>
+
+      <ion-input
+        id="roleName"
+        label="Role Name"
+        formControlName="roleName"
+        placeholder="Enter Role Name">
+      </ion-input>
+
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="roleForm.invalid"
+        (click)="onSubmit()">
+        Add Role
+      </ion-button>
+
+    </form>
+  </ion-card-content>
+
+</ion-card>

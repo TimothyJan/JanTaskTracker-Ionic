@@ -1,0 +1,16 @@
+<div *ngIf="projectTask.assignedEmployeeIDs; else noAssignedEmployees">
+  <ion-list>
+    <ion-list-header>
+      Assigned Employees:
+    </ion-list-header>
+    <ion-item *ngFor="let employeeID of projectTask.assignedEmployeeIDs">
+      <ion-text>
+        {{ getEmployeeNameByEmployeeID(employeeID) }} - {{ getRoleNameByEmployeeID(employeeID) }}
+      </ion-text>
+    </ion-item>
+  </ion-list>
+</div>
+
+<ng-template #noAssignedEmployees>
+  No assigned employees
+</ng-template>

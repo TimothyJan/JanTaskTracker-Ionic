@@ -1,0 +1,40 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Create Project</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true" [disabled]="!projectForm.valid">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="projectForm" (ngSubmit)="createProject()">
+    <ion-list>
+
+      <ion-item>
+        <app-input [label]="'Project'" (valueChanged)="handleProjectNameChange($event)"></app-input>
+      </ion-item>
+
+      <ion-item>
+        <app-status-selector (statusSelectedEvent)="handleStatusChange($event)"></app-status-selector>
+      </ion-item>
+
+      <ion-item>
+        <app-text-area [label]="'Description'" (textChanged)="handleDescriptionChange($event)"></app-text-area>
+      </ion-item>
+
+      <ion-item>
+        <app-date-selector [label]="'Start Date'" (dateSelected)="handleStartDateSelection($event)"></app-date-selector>
+      </ion-item>
+
+      <ion-item>
+        <app-date-selector [label]="'Due Date'" (dateSelected)="handleDueDateSelection($event)"></app-date-selector>
+      </ion-item>
+
+    </ion-list>
+  </form>
+</ion-content>

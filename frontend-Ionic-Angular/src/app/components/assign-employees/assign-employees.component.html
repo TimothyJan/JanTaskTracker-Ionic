@@ -1,0 +1,13 @@
+<ion-select
+  placeholder="Select Employees"
+  [multiple]="true"
+  [(ngModel)]="selectedEmployees"
+  (ionChange)="onEmployeeChange($event)"
+  [compareWith]="compareEmployees">
+
+  <div slot="label">Employees: </div>
+
+  <ion-select-option *ngFor="let employee of employees" [value]="employee">
+    {{ employee.name }} - {{ getRoleName(employee.roleID) }}
+  </ion-select-option>
+</ion-select>

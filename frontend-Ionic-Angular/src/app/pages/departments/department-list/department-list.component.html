@@ -1,0 +1,51 @@
+<ion-card class="ion-card">
+
+  <ion-card-header class="ion-text-center">
+    <ion-card-title>
+      Department List
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-list *ngIf="departments.length>0; else noDepartmentsBlock">
+
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>Department Name</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <ion-item *ngFor="let department of departments">
+        <ion-grid>
+          <ion-row>
+
+            <ion-col size="10" class="ion-align-self-center">
+                {{ department.departmentName }}
+            </ion-col>
+
+            <ion-col size="2">
+              <ion-button
+                fill="clear"
+                size="small"
+                (click)="presentDepartmentActionSheet(department)">
+                <ion-icon
+                  slot="icon-only"
+                  name="ellipsis-vertical-sharp">
+                </ion-icon>
+              </ion-button>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+    </ion-list>
+
+    <ng-template #noDepartmentsBlock>
+      No Departments
+    </ng-template>
+  </ion-card-content>
+
+</ion-card>

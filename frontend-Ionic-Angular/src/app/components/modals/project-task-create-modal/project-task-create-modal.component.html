@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Edit Project Task</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+
+    <ion-item>
+      <app-input
+        [label]="'Task'"
+        (valueChanged)="handleTitleChange($event)">
+      </app-input>
+    </ion-item>
+
+    <ion-item>
+      <app-text-area
+        [label]="'Description'"
+        (textChanged)="handleDescriptionChange($event)">
+      </app-text-area>
+    </ion-item>
+
+    <ion-item>
+      <app-status-selector
+        (statusSelectedEvent)="handleStatusChange($event)">
+      </app-status-selector>
+    </ion-item>
+
+    <ion-item>
+      <app-date-selector
+        [label]="'Start Date'"
+        (dateSelected)="handleStartDateSelection($event)">
+      </app-date-selector>
+    </ion-item>
+
+    <ion-item>
+      <app-date-selector
+        [label]="'Due Date'"
+        (dateSelected)="handleDueDateSelection($event)">
+      </app-date-selector>
+    </ion-item>
+
+    <ion-item>
+      <app-assign-employees
+        [assignedEmployeeIDs]="projectTaskForm.value.assignedEmployeeIDs"
+        (employeesSelectedEvent)="handleEmployeeSelection($event)">
+      </app-assign-employees>
+    </ion-item>
+
+  </ion-list>
+</ion-content>

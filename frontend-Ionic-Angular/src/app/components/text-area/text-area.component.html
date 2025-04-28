@@ -1,0 +1,11 @@
+<div class="text-area-container">
+  <ion-textarea
+    [value]="text"
+    [label]="label + ':'"
+    (ionInput)="onTextChange($event)"
+    [placeholder]="placeholder"
+    [rows]="rows"
+    [autoGrow]="true"
+    class="full-width">
+  </ion-textarea>
+</div>
