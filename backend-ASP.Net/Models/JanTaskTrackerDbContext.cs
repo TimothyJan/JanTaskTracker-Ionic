@@ -67,7 +67,7 @@ namespace JanTaskTracker.Server
                 });
 
             // Seed data
-            //SeedData.ApplySeedData(modelBuilder);
+            SeedData.ApplySeedData(modelBuilder);
         }
     }
 }

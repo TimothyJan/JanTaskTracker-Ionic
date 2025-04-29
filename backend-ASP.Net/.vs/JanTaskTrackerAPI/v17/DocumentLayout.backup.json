@@ -1,7 +1,20 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\models\\jantasktrackerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:models\\jantasktrackerdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,6 +35,45 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "JanTaskTrackerDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\JanTaskTrackerDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\JanTaskTrackerDbContext.cs",
+              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\JanTaskTrackerDbContext.cs",
+              "RelativeToolTip": "Models\\JanTaskTrackerDbContext.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAiwEUAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T22:26:04.44Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T21:57:53.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SeedData.cs",
+              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\SeedData.cs",
+              "RelativeDocumentMoniker": "SeedData.cs",
+              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\SeedData.cs",
+              "RelativeToolTip": "SeedData.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAowFkAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-29T22:02:23.068Z",
+              "EditorCaption": ""
             }
           ]
         },

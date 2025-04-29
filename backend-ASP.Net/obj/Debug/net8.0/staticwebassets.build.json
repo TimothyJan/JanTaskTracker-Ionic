@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "Q6anPcwpwF2dAJZtLMm09D9dMjk2hF7fgi34OZFI2K8=",
+  "Source": "JanTaskTrackerAPI",
+  "BasePath": "_content/JanTaskTrackerAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
