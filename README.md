@@ -1,6 +1,22 @@
 # JanTaskTracker-Ionic
 JanTaskTracker Full-stack project task and employee management app with CRUD functionality for projects, tasks, employees, departments, and roles using ASP.NET Core, Ionic-Angular, and SQL Server.
 
+Run:
+<ul>
+  <li>Frontend
+    <ul>
+      <li>Change Directory(cd) to frontend.</li>
+      <li>~<code>ionic serve</code></li>
+    </ul>
+  </li>
+  <li>Backend
+    <ul>
+      <li>In Visual Studio 2022, open solution in backend.</li>
+      <li>Run in Visual Studio to use API.</li>
+    </ul>
+  </li>
+</ul>
+
 Process:
 <ul>
   <li>SQL Server Management Studio

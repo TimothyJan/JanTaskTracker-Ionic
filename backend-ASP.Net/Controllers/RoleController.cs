@@ -1,6 +1,6 @@
-﻿using JanTaskTracker.Server.Models;
+﻿// RoleController.cs
+using JanTaskTracker.Server.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace JanTaskTracker.Server.Controllers
 {
@@ -31,16 +31,60 @@ namespace JanTaskTracker.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole(RoleDTO roleDto)
+        public async Task<ActionResult<RoleDTO>> CreateRole(RoleDTO roleDto)
         {
+            // Check for duplicate role name in the same department
+            if (await _repository.CheckDuplicateNameAsync(roleDto.RoleName, roleDto.DepartmentID))
+            {
+                return Conflict(new
+                {
+                    message = $"A role with the name '{roleDto.RoleName}' already exists in this department."
+                });
+            }
+
             await _repository.CreateRoleAsync(roleDto);
-            return CreatedAtAction(nameof(GetRoleById), new { id = roleDto.RoleID }, roleDto);
+
+            var createdRole = await _repository.GetRoleByIdAsync(roleDto.RoleID);
+            if (createdRole == null)
+            {
+                return Problem("Role was created but could not be retrieved.");
+            }
+
+            return CreatedAtAction(
+                nameof(GetRoleById),
+                new { id = createdRole.RoleID },
+                createdRole);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRole(int id, RoleDTO roleDto)
         {
-            if (id != roleDto.RoleID) return BadRequest();
+            if (id != roleDto.RoleID)
+            {
+                return BadRequest(new { message = "Role ID mismatch." });
+            }
+
+            var existingRole = await _repository.GetRoleByIdAsync(id);
+            if (existingRole == null)
+            {
+                return NotFound();
+            }
+
+            // Only check for duplicates if name or department is being changed
+            if (existingRole.RoleName != roleDto.RoleName ||
+                existingRole.DepartmentID != roleDto.DepartmentID)
+            {
+                if (await _repository.CheckDuplicateNameAsync(
+                    roleDto.RoleName,
+                    roleDto.DepartmentID,
+                    roleDto.RoleID))
+                {
+                    return Conflict(new
+                    {
+                        message = $"A role with the name '{roleDto.RoleName}' already exists in this department."
+                    });
+                }
+            }
 
             await _repository.UpdateRoleAsync(roleDto);
             return NoContent();
@@ -49,6 +93,12 @@ namespace JanTaskTracker.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int id)
         {
+            var roleExists = await _repository.GetRoleByIdAsync(id) != null;
+            if (!roleExists)
+            {
+                return NotFound();
+            }
+
             await _repository.DeleteRoleAsync(id);
             return NoContent();
         }
@@ -58,7 +108,6 @@ namespace JanTaskTracker.Server.Controllers
         {
             var roles = await _repository.GetRolesByDepartmentIdAsync(departmentId);
             if (roles == null || !roles.Any()) return NotFound();
-
             return Ok(roles);
         }
     }

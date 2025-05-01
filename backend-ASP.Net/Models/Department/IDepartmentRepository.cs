@@ -1,5 +1,4 @@
-﻿
-namespace JanTaskTracker.Server.Models
+﻿namespace JanTaskTracker.Server.Models
 {
     public interface IDepartmentRepository
     {
@@ -8,5 +7,6 @@ namespace JanTaskTracker.Server.Models
         Task CreateDepartmentAsync(DepartmentDTO departmentDto);
         Task UpdateDepartmentAsync(DepartmentDTO departmentDto);
         Task DeleteDepartmentAsync(int id);
+        Task<bool> CheckDuplicateNameAsync(string name);
     }
 }

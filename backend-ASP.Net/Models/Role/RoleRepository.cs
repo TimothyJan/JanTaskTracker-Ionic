@@ -80,6 +80,24 @@ namespace JanTaskTracker.Server.Models
                 .ToListAsync();
         }
 
+        public async Task<bool> CheckDuplicateNameAsync(string name, int? departmentId = null, int? excludeRoleId = null)
+        {
+            var query = _context.Roles
+                .Where(r => r.RoleName.Trim().ToLower() == name.Trim().ToLower());
+
+            if (departmentId.HasValue)
+            {
+                query = query.Where(r => r.DepartmentID == departmentId.Value);
+            }
+
+            if (excludeRoleId.HasValue)
+            {
+                query = query.Where(r => r.RoleID != excludeRoleId.Value);
+            }
+
+            return await query.AnyAsync();
+        }
+
     }
 
 }

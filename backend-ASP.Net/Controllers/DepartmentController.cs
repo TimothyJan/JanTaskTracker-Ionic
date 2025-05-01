@@ -30,16 +30,52 @@ namespace JanTaskTracker.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDepartment(DepartmentDTO departmentDto)
+        public async Task<ActionResult<DepartmentDTO>> CreateDepartment(DepartmentDTO departmentDto)
         {
+            // Check for duplicate department name
+            if (await _repository.CheckDuplicateNameAsync(departmentDto.DepartmentName))
+            {
+                return Conflict(new { message = $"A department with the name '{departmentDto.DepartmentName}' already exists." });
+            }
+
             await _repository.CreateDepartmentAsync(departmentDto);
-            return CreatedAtAction(nameof(GetDepartmentById), new { id = departmentDto.DepartmentID }, departmentDto);
+
+            // Get the newly created department to return with the response
+            var createdDepartment = await _repository.GetDepartmentByIdAsync(departmentDto.DepartmentID);
+            if (createdDepartment == null)
+            {
+                return Problem("Department was created but could not be retrieved.");
+            }
+
+            return CreatedAtAction(
+                nameof(GetDepartmentById),
+                new { id = createdDepartment.DepartmentID },
+                createdDepartment);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, DepartmentDTO departmentDto)
         {
-            if (id != departmentDto.DepartmentID) return BadRequest();
+            if (id != departmentDto.DepartmentID)
+            {
+                return BadRequest(new { message = "Department ID mismatch." });
+            }
+
+            // Get existing department to compare names
+            var existingDepartment = await _repository.GetDepartmentByIdAsync(id);
+            if (existingDepartment == null)
+            {
+                return NotFound();
+            }
+
+            // Only check for duplicates if the name is being changed
+            if (!string.Equals(existingDepartment.DepartmentName, departmentDto.DepartmentName, StringComparison.OrdinalIgnoreCase))
+            {
+                if (await _repository.CheckDuplicateNameAsync(departmentDto.DepartmentName))
+                {
+                    return Conflict(new { message = $"A department with the name '{departmentDto.DepartmentName}' already exists." });
+                }
+            }
 
             await _repository.UpdateDepartmentAsync(departmentDto);
             return NoContent();
@@ -48,6 +84,12 @@ namespace JanTaskTracker.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
+            var departmentExists = await _repository.GetDepartmentByIdAsync(id) != null;
+            if (!departmentExists)
+            {
+                return NotFound();
+            }
+
             await _repository.DeleteDepartmentAsync(id);
             return NoContent();
         }

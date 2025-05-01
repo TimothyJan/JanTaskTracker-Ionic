@@ -62,6 +62,12 @@ namespace JanTaskTracker.Server.Models
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> CheckDuplicateNameAsync(string name)
+        {
+            return await _context.Departments
+                .AnyAsync(d => d.DepartmentName.Trim().ToLower() == name.Trim().ToLower());
+        }
     }
 
 }
