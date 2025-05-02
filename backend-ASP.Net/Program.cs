@@ -6,6 +6,19 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDevClient",
+        builder =>
+        {
+            builder
+                .WithOrigins("http://localhost:8100") // Ionic dev server
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // Register DbContext with retry policy for transient fault handling
 builder.Services.AddDbContext<JanTaskTrackerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging());
@@ -30,6 +43,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAngularDevClient");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

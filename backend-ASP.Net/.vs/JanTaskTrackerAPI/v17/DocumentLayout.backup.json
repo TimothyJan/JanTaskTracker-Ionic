@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\models\\role\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:models\\role\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\models\\role\\irolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:models\\role\\irolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|c:\\users\\janti\\onedrive\\documents\\github\\jantasktracker-ionic\\backend-asp.net\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{069FFA9B-17A5-4D00-8C71-CAE63ABA1CED}|JanTaskTrackerAPI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,40 +31,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RoleController.cs",
-              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Controllers\\RoleController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RoleController.cs",
-              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Controllers\\RoleController.cs",
-              "RelativeToolTip": "Controllers\\RoleController.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAcwHEAAAABAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-01T01:05:24.389Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RoleRepository.cs",
-              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\Role\\RoleRepository.cs",
-              "RelativeDocumentMoniker": "Models\\Role\\RoleRepository.cs",
-              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\Role\\RoleRepository.cs",
-              "RelativeToolTip": "Models\\Role\\RoleRepository.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAcwEcAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-01T01:05:18.877Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IRoleRepository.cs",
-              "DocumentMoniker": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\Role\\IRoleRepository.cs",
-              "RelativeDocumentMoniker": "Models\\Role\\IRoleRepository.cs",
-              "ToolTip": "C:\\Users\\janti\\OneDrive\\Documents\\GitHub\\JanTaskTracker-Ionic\\backend-ASP.Net\\Models\\Role\\IRoleRepository.cs",
-              "RelativeToolTip": "Models\\Role\\IRoleRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-01T01:04:47.412Z",
+              "WhenOpened": "2025-05-01T17:01:58.937Z",
               "EditorCaption": ""
             }
           ]

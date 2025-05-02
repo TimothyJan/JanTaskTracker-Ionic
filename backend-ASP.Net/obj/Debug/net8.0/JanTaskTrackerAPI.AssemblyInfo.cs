@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JanTaskTrackerAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73259ce395991ab94df44bb14b951912ad89ec06")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f28e414f00cd5f662744c07541cd09bbe59945b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("JanTaskTrackerAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JanTaskTrackerAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
