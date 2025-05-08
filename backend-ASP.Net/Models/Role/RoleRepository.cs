@@ -38,13 +38,26 @@ namespace JanTaskTracker.Server.Models
 
         public async Task CreateRoleAsync(RoleDTO roleDto)
         {
-            var role = new Role
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                RoleName = roleDto.RoleName,
-                DepartmentID = roleDto.DepartmentID
-            };
-            _context.Roles.Add(role);
-            await _context.SaveChangesAsync();
+                var role = new Role
+                {
+                    RoleName = roleDto.RoleName,
+                    DepartmentID = roleDto.DepartmentID
+                };
+
+                _context.Roles.Add(role);
+                await _context.SaveChangesAsync();
+
+                roleDto.RoleID = role.RoleID;
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task UpdateRoleAsync(RoleDTO roleDto)

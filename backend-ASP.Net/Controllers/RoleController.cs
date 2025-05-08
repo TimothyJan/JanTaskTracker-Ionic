@@ -84,43 +84,22 @@ namespace JanTaskTracker.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<RoleDTO>> CreateRole(RoleDTO roleDto)
         {
-            try
+            // Check for duplicate role name in the same department
+            if (await _repository.CheckDuplicateNameAsync(roleDto.RoleName, roleDto.DepartmentID))
             {
-                if (string.IsNullOrWhiteSpace(roleDto.RoleName))
+                return Conflict(new
                 {
-                    return BadRequest(new { message = "Role name is required." });
-                }
-
-                if (await _repository.CheckDuplicateNameAsync(roleDto.RoleName, roleDto.DepartmentID))
-                {
-                    return Conflict(new
-                    {
-                        message = $"A role with the name '{roleDto.RoleName}' already exists in this department.",
-                        suggestion = "Please choose a different name."
-                    });
-                }
-
-                await _repository.CreateRoleAsync(roleDto);
-
-                var createdRole = await _repository.GetRoleByIdAsync(roleDto.RoleID);
-                if (createdRole == null)
-                {
-                    return Problem("Role was created but could not be retrieved.");
-                }
-
-                return CreatedAtAction(
-                    nameof(GetRoleById),
-                    new { id = createdRole.RoleID },
-                    createdRole);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while creating the role.",
-                    error = ex.Message
+                    message = $"A role with the name '{roleDto.RoleName}' already exists in this department."
                 });
             }
+
+            await _repository.CreateRoleAsync(roleDto);
+
+            // Now we can just return the DTO we already have (with the updated ID)
+            return CreatedAtAction(
+                nameof(GetRoleById),
+                new { id = roleDto.RoleID },
+                roleDto);
         }
 
         [HttpPut("{id}")]

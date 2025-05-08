@@ -36,12 +36,25 @@ namespace JanTaskTracker.Server.Models
 
         public async Task CreateDepartmentAsync(DepartmentDTO departmentDto)
         {
-            var department = new Department
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                DepartmentName = departmentDto.DepartmentName
-            };
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
+                var department = new Department
+                {
+                    DepartmentName = departmentDto.DepartmentName
+                };
+
+                _context.Departments.Add(department);
+                await _context.SaveChangesAsync();
+
+                departmentDto.DepartmentID = department.DepartmentID;
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task UpdateDepartmentAsync(DepartmentDTO departmentDto)

@@ -49,46 +49,21 @@ namespace JanTaskTracker.Server.Controllers
             }
         }
 
-        // POST: api/Department
         [HttpPost]
         public async Task<ActionResult<DepartmentDTO>> CreateDepartment(DepartmentDTO departmentDto)
         {
-            try
+            // Check for duplicate department name
+            if (await _repository.CheckDuplicateNameAsync(departmentDto.DepartmentName))
             {
-                // Validate input
-                if (string.IsNullOrWhiteSpace(departmentDto.DepartmentName))
-                {
-                    return BadRequest(new { message = "Department name is required." });
-                }
-
-                // Check for duplicate department name
-                if (await _repository.CheckDuplicateNameAsync(departmentDto.DepartmentName))
-                {
-                    return Conflict(new
-                    {
-                        message = $"A department with the name '{departmentDto.DepartmentName}' already exists.",
-                        suggestion = "Please choose a different name."
-                    });
-                }
-
-                await _repository.CreateDepartmentAsync(departmentDto);
-
-                // Get the newly created department to return with the response
-                var createdDepartment = await _repository.GetDepartmentByIdAsync(departmentDto.DepartmentID);
-                if (createdDepartment == null)
-                {
-                    return Problem("Department was created but could not be retrieved.");
-                }
-
-                return CreatedAtAction(
-                    nameof(GetDepartmentById),
-                    new { id = createdDepartment.DepartmentID },
-                    createdDepartment);
+                return Conflict(new { message = $"A department with the name '{departmentDto.DepartmentName}' already exists." });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while creating the department.", error = ex.Message });
-            }
+
+            await _repository.CreateDepartmentAsync(departmentDto);
+
+            return CreatedAtAction(
+                nameof(GetDepartmentById),
+                new { id = departmentDto.DepartmentID },
+                departmentDto);
         }
 
         // PUT: api/Department/5
