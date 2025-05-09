@@ -6,7 +6,7 @@
     </ion-card-title>
   </ion-card-header>
 
-  <ion-card-content>
+  <ion-card-content *ngIf="!createDepartmentLoading; else loadingBlock">
     <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()">
 
       <ion-input
@@ -28,3 +28,7 @@
   </ion-card-content>
 
 </ion-card>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

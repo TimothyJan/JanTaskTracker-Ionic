@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Department } from 'src/app/models/department.model';
 import { Role } from 'src/app/models/role.model';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -18,12 +18,14 @@ import {
   IonRow,
   IonCol,
   ActionSheetController,
-  ModalController
+  ModalController,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { ellipsisVerticalSharp } from 'ionicons/icons';
 import { RoleEditModalComponent } from '../../../components/modals/role-edit-modal/role-edit-modal.component';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-role-list',
@@ -44,12 +46,15 @@ import { ToastService } from 'src/app/services/toast.service';
     IonGrid,
     IonRow,
     IonCol,
+    IonSpinner
   ]
 })
-export class RoleListComponent implements OnInit {
+export class RoleListComponent implements OnInit, OnDestroy {
   roles: Role[] = [];
   departments: Department[] = [];
   editModeRoleId: number | null = null;
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private _departmentService: DepartmentService,
@@ -62,12 +67,32 @@ export class RoleListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDepartments();
+    this.getDepartments();
     this.loadRoles();
   }
 
-  loadDepartments(): void {
-    this.departments = this._departmentService.getDepartments();
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   /** Load all roles */
@@ -133,6 +158,11 @@ export class RoleListComponent implements OnInit {
       this.loadRoles();
       this._toastService.presentSuccessToast("Role deleted.");
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

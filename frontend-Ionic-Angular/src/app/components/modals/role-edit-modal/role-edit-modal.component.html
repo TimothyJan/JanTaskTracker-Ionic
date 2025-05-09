@@ -21,7 +21,7 @@
     </ion-input>
   </ion-item>
 
-  <ion-item>
+  <ion-item *ngIf="">
     <ion-select
       placeholder="Select a Department"
       [(ngModel)]="editedRole.departmentID">
@@ -36,3 +36,7 @@
   </ion-item>
 
 </ion-content>
+
+<ng-template #departmentsLoadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

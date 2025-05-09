@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ModalController,
@@ -14,7 +14,9 @@ import {
   IonInput,
   IonSelect,
   IonSelectOption,
+  IonSpinner
 } from '@ionic/angular/standalone';
+import { Subject, takeUntil } from 'rxjs';
 import { Department } from 'src/app/models/department.model';
 import { Employee } from 'src/app/models/employee.model';
 import { Role } from 'src/app/models/role.model';
@@ -41,15 +43,19 @@ import { ToastService } from 'src/app/services/toast.service';
     IonToolbar,
     IonInput,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSpinner
   ],
 })
-export class EmployeeEditModalComponent implements OnInit {
+export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   @Input() employeeID: number = -1;
   originalEmployee: Employee = {employeeID:-1, name:"", salary:-1, departmentID:-1, roleID:-1};
   editedEmployee: Employee = {employeeID:-1, name:"", salary:-1, departmentID:-1, roleID:-1};
   departments: Department[] = [];
   filteredRoles: Role[] = [];
+
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -61,7 +67,7 @@ export class EmployeeEditModalComponent implements OnInit {
 
   ngOnInit() {
     this.getEmployee();
-    this.departments = this._departmentService.getDepartments();
+    this.getDepartments();
     this.filteredRoles= this._roleService.getRolesFromDepartmentID(this.originalEmployee.departmentID);
   }
 
@@ -75,6 +81,30 @@ export class EmployeeEditModalComponent implements OnInit {
     }
     this.originalEmployee = {...employee};
     this.editedEmployee = {...employee};
+  }
+
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   /** When department selection changes update the filteredRoles */
@@ -106,6 +136,11 @@ export class EmployeeEditModalComponent implements OnInit {
     if (inputElement?.value) {
       this.editedEmployee.name = inputElement.value.toUpperCase();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

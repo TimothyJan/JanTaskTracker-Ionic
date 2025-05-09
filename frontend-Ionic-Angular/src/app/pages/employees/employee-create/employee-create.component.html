@@ -10,6 +10,7 @@
     <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
 
       <ion-select
+        *ngIf="!departmentsLoading; else departmentsLoadingBlock"
         id="departmentID"
         formControlName="departmentID"
         placeholder="Select a Department"
@@ -61,3 +62,7 @@
   </ion-card-content>
 
 </ion-card>
+
+<ng-template #departmentsLoadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

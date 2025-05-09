@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Department } from 'src/app/models/department.model';
@@ -12,9 +12,11 @@ import {
   IonInput,
   IonButton,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-role-create',
@@ -32,11 +34,14 @@ import { ToastService } from 'src/app/services/toast.service';
     IonInput,
     IonButton,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSpinner
   ],
 })
-export class RoleCreateComponent implements OnInit {
+export class RoleCreateComponent implements OnInit, OnDestroy {
   departments: Department[] = [];
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   roleForm: FormGroup = new FormGroup({
     roleName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
@@ -54,9 +59,28 @@ export class RoleCreateComponent implements OnInit {
     this.capitalizeRoleName();
   }
 
-  /** Get departments from Department Service */
+  /** Get all departments */
   getDepartments(): void {
-    this.departments = this._departmentService.getDepartments();
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   onSubmit(): void {
@@ -90,6 +114,11 @@ export class RoleCreateComponent implements OnInit {
         );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

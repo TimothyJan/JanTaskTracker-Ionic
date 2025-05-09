@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -8,9 +8,11 @@ import {
   IonCardTitle,
   IonCardContent,
   IonInput,
-  IonButton
+  IonButton,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-department-create',
@@ -26,9 +28,14 @@ import { ToastService } from 'src/app/services/toast.service';
     IonCardTitle,
     IonCardContent,
     IonInput,
-    IonButton],
+    IonButton,
+    IonSpinner
+  ],
 })
-export class DepartmentCreateComponent implements OnInit{
+export class DepartmentCreateComponent implements OnInit, OnDestroy{
+
+  createDepartmentLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   departmentForm: FormGroup = new FormGroup({
     departmentName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)])
@@ -44,20 +51,42 @@ export class DepartmentCreateComponent implements OnInit{
   }
 
   onSubmit() {
+    this.createDepartmentLoading = true;
+
     if (this.departmentForm.valid) {
-      // Check for duplicates
-      if (!this._departmentService.checkDuplicates(this.departmentForm.controls["departmentName"].value)) {
-        this._departmentService.createDepartment(this.departmentForm.value);
-        this.departmentForm.reset();
-        this._departmentService.notifyDepartmentsChanged();
-        this._toastService.presentSuccessToast("Department created.");
-      }
-      else {
-        this._toastService.presentErrorToast("Department already exists.");
-      }
-    }
-    else {
-      this._toastService.presentErrorToast("Department failed to be created.");
+      const departmentName = this.departmentForm.controls["departmentName"].value;
+      const departmentData = { departmentName: departmentName };
+
+      this._departmentService.checkDuplicates(departmentName)
+        .pipe(
+          takeUntil(this.unsubscribe$),
+          switchMap(isDuplicate => {
+            if (isDuplicate) {
+              throw new Error('Department already exists.');
+            }
+            return this._departmentService.createDepartment(departmentData);
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.departmentForm.reset();
+            this._departmentService.notifyDepartmentsChanged();
+            this._toastService.presentSuccessToast("Department created successfully.");
+            this.createDepartmentLoading = false;
+          },
+          error: (error) => {
+            console.error(error);
+            this._toastService.presentErrorToast(
+              error.message === 'Department already exists.'
+                ? error.message
+                : "Department failed to be created."
+            );
+            this.createDepartmentLoading = false;
+          }
+        });
+    } else {
+      this._toastService.presentErrorToast("Please fill in all required fields correctly.");
+      this.createDepartmentLoading = false;
     }
   }
 
@@ -71,6 +100,11 @@ export class DepartmentCreateComponent implements OnInit{
         );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

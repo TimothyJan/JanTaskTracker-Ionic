@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ModalController,
@@ -13,7 +13,9 @@ import {
   IonInput,
   IonSelect,
   IonSelectOption,
+  IonSpinner
 } from '@ionic/angular/standalone';
+import { Subject, takeUntil } from 'rxjs';
 import { Department } from 'src/app/models/department.model';
 import { Role } from 'src/app/models/role.model';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -37,14 +39,17 @@ import { ToastService } from 'src/app/services/toast.service';
     IonToolbar,
     IonInput,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSpinner
   ]
 })
-export class RoleEditModalComponent  implements OnInit {
+export class RoleEditModalComponent  implements OnInit, OnDestroy {
   @Input() roleID: number = -1;
   departments: Department[] = [];
   originalRole: Role = {roleID: -1, roleName: "", departmentID: -1};
   editedRole: Role = {roleID: -1, roleName: "", departmentID: -1}; // Working copy
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -55,7 +60,7 @@ export class RoleEditModalComponent  implements OnInit {
 
   ngOnInit() {
     this.getRole();
-    this.departments = this._departmentService.getDepartments();
+    this.getDepartments();
   }
 
   /** Get Employee */
@@ -68,6 +73,30 @@ export class RoleEditModalComponent  implements OnInit {
     }
     this.originalRole = {...role};
     this.editedRole = {...role};
+  }
+
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   /** Camcel and close modal */
@@ -94,6 +123,11 @@ export class RoleEditModalComponent  implements OnInit {
     if (inputElement?.value) {
       this.editedRole.roleName = inputElement.value.toUpperCase();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

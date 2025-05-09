@@ -31,7 +31,7 @@
               Salary: ${{ employee.salary }}
             </ion-col>
 
-            <ion-col size="3" class="ion-align-self-center">
+            <ion-col *ngIf="!departmentsLoading; else departmentsLoadingBlock" size="3" class="ion-align-self-center">
               {{ getDepartmentName(employee.departmentID) }}
             </ion-col>
 
@@ -63,3 +63,7 @@
   </ion-card-content>
 
 </ion-card>
+
+<ng-template #departmentsLoadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

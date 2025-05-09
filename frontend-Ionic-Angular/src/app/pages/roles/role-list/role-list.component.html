@@ -26,7 +26,7 @@
               {{ role.roleName }}
             </ion-col>
 
-            <ion-col size="5" class="ion-align-self-center">
+            <ion-col *ngIf="!departmentsLoading; else departmentsLoadingBlock" size="5" class="ion-align-self-center">
               {{ getDepartmentName(role.departmentID) }}
             </ion-col>
 
@@ -53,3 +53,7 @@
   </ion-card-content>
 
 </ion-card>
+
+<ng-template #departmentsLoadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

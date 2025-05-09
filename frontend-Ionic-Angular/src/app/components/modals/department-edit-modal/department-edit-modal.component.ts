@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ModalController,
@@ -12,7 +12,9 @@ import {
   IonTitle,
   IonToolbar,
   IonInput,
+  IonSpinner
 } from '@ionic/angular/standalone';
+import { Subject, takeUntil } from 'rxjs';
 import { Department } from 'src/app/models/department.model';
 import { DepartmentService } from 'src/app/services/department.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -34,12 +36,16 @@ import { ToastService } from 'src/app/services/toast.service';
     IonTitle,
     IonToolbar,
     IonInput,
+    IonSpinner
   ]
 })
-export class DepartmentEditModalComponent implements OnInit {
+export class DepartmentEditModalComponent implements OnInit, OnDestroy {
   @Input() departmentID: number = -1;
   originalDepartment: Department = {departmentID: -1, departmentName: ""};
   editedDepartment: Department = {departmentID: -1, departmentName: ""}; // Working copy
+  departmentLoading: boolean = false;
+  departmentSaving: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -51,16 +57,29 @@ export class DepartmentEditModalComponent implements OnInit {
     this.getDepartment();
   }
 
-  /** Get Employee */
+  /** Get Department */
   getDepartment(): void {
-    const dept = this._departmentService.getDepartment(this.departmentID);
-    if (!dept) {
-      console.error('Department not found');
-      this.modalCtrl.dismiss(null, 'error');
-      return;
-    }
-    this.originalDepartment = {...dept};
-    this.editedDepartment = {...dept};
+    this.departmentLoading = true;
+    this._departmentService.getDepartmentById(this.departmentID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (dept) => {
+          this.originalDepartment = {...dept};
+          this.editedDepartment = {...dept};
+          this.departmentLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartment();  // Reload departments when a new one is added
+      });
   }
 
   /** Cancel and close modal */
@@ -76,9 +95,22 @@ export class DepartmentEditModalComponent implements OnInit {
 
   /** Save Changes */
   saveChanges(): void {
-    this._departmentService.updateDepartment(this.editedDepartment);
-    this._departmentService.notifyDepartmentsChanged();
-    this._toastService.presentSuccessToast("Department saved.");
+    this.departmentSaving = true;
+    this._departmentService.updateDepartment(this.editedDepartment)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (response) => {
+        console.log(response);
+        this._departmentService.notifyDepartmentsChanged();
+        this._toastService.presentSuccessToast("Department saved.");
+        this.departmentSaving = false;
+      },
+      error: (error) => {
+        console.log(error.message);
+        this._toastService.presentErrorToast(error.message);
+        this.departmentSaving = false;
+      }
+    });
   }
 
   /** Capitalize departmentName input */
@@ -87,6 +119,11 @@ export class DepartmentEditModalComponent implements OnInit {
     if (inputElement?.value) {
       this.editedDepartment.departmentName = inputElement.value.toUpperCase();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

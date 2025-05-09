@@ -1,24 +1,30 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
-    </ion-buttons>
-    <ion-title>Edit Department</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<div *ngIf="!departmentSaving; else loadingBlock">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+      </ion-buttons>
+      <ion-title>Edit Department</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-item>
-      <ion-input
-        label="Department Name:"
-        value={{editedDepartment.departmentName}}
-        (ionInput)="onDepartmentNameInput($event)"
-        [(ngModel)]="editedDepartment.departmentName">
-      </ion-input>
-    </ion-item>
-  </ion-list>
-</ion-content>
+  <ion-content class="ion-padding">
+    <ion-list *ngIf="!departmentLoading; else loadingBlock">
+      <ion-item>
+        <ion-input
+          label="Department Name:"
+          value={{editedDepartment.departmentName}}
+          (ionInput)="onDepartmentNameInput($event)"
+          [(ngModel)]="editedDepartment.departmentName">
+        </ion-input>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</div>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

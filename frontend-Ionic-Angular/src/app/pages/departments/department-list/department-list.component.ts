@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Department } from 'src/app/models/department.model';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -16,12 +16,14 @@ import {
   IonRow,
   IonCol,
   ActionSheetController,
-  ModalController
+  ModalController,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { ellipsisVerticalSharp } from 'ionicons/icons';
 import { DepartmentEditModalComponent } from '../../../components/modals/department-edit-modal/department-edit-modal.component';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-department-list',
@@ -41,13 +43,17 @@ import { ToastService } from 'src/app/services/toast.service';
     IonIcon,
     IonGrid,
     IonRow,
-    IonCol
+    IonCol,
+    IonSpinner
   ]
 })
-export class DepartmentListComponent implements OnInit {
+export class DepartmentListComponent implements OnInit, OnDestroy {
 
   departments: Department[] = [];
   editModeDepartmentId: number | null = null;
+  departmentsLoading: boolean = false;
+  deleteLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private _departmentService: DepartmentService,
@@ -59,12 +65,31 @@ export class DepartmentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDepartments();
+    this.getDepartments();
   }
 
-  /** Load all Departments */
-  loadDepartments(): void {
-    this.departments = this._departmentService.getDepartments();
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   /** Enter Edit mode for editting Department list */
@@ -111,7 +136,7 @@ export class DepartmentListComponent implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.loadDepartments();
+      this.getDepartments();
       // console.log(data, role);
     }
   }
@@ -120,10 +145,27 @@ export class DepartmentListComponent implements OnInit {
   onDelete(departmentID: number): void {
     const confirmDelete = confirm('Are you sure you want to delete this department?');
     if (confirmDelete) {
-      this._departmentService.deleteDepartment(departmentID);
-      this.loadDepartments();
-      this._toastService.presentSuccessToast("Department deleted.");
+      this.deleteLoading = true;
+      this._departmentService.deleteDepartment(departmentID)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.getDepartments();
+            this._toastService.presentSuccessToast("Department deleted.");
+            this.deleteLoading = false;
+          },
+          error: (error) => {
+            console.log(error.message);
+            this._toastService.presentErrorToast(error.message);
+            this.deleteLoading = false;
+          }
+        });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

@@ -22,7 +22,7 @@
       </ion-input>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="!departmentsLoading; else departmentsLoadingBlock">
       <ion-select
         placeholder="Select a Department"
         (ionChange)="changeFilteredRoles($event)"
@@ -59,3 +59,7 @@
 
   </ion-list>
 </ion-content>
+
+<ng-template #departmentsLoadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

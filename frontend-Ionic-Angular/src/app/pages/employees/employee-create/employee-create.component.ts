@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Department } from 'src/app/models/department.model';
 import { Role } from 'src/app/models/role.model';
@@ -14,9 +14,11 @@ import {
   IonInput,
   IonButton,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-employee-create',
@@ -34,13 +36,16 @@ import { ToastService } from 'src/app/services/toast.service';
     IonInput,
     IonButton,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSpinner
   ]
 })
-export class EmployeeCreateComponent implements OnInit {
+export class EmployeeCreateComponent implements OnInit, OnDestroy {
 
-  departments: Department[] = []; // Array to hold department data
-  roles: Role[] = []; // Array to hold role data
+  departments: Department[] = [];
+  roles: Role[] = [];
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   employeeForm: FormGroup = new FormGroup({
     name: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(100)]),
@@ -57,8 +62,32 @@ export class EmployeeCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.departments = this._departmentService.getDepartments();
+    this.getDepartments();
     this.capitalizeEmployeeName();
+  }
+
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
   }
 
   /** Department change updates the roles array to the selected Department Roles  */
@@ -99,6 +128,11 @@ export class EmployeeCreateComponent implements OnInit {
         );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

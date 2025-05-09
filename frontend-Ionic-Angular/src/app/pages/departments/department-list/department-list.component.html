@@ -1,4 +1,4 @@
-<ion-card class="ion-card">
+<ion-card class="ion-card" *ngIf="!deleteLoading; else loadingBlock">
 
   <ion-card-header class="ion-text-center">
     <ion-card-title>
@@ -7,6 +7,9 @@
   </ion-card-header>
 
   <ion-card-content>
+    <div *ngIf="!departmentsLoading; else loadingBlock">
+
+    </div>
     <ion-list *ngIf="departments.length>0; else noDepartmentsBlock">
 
       <ion-item>
@@ -49,3 +52,7 @@
   </ion-card-content>
 
 </ion-card>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

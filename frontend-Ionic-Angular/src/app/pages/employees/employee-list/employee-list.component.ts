@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Employee } from 'src/app/models/employee.model';
 import { DepartmentService } from 'src/app/services/department.service';
@@ -18,12 +18,16 @@ import {
   IonRow,
   IonCol,
   ActionSheetController,
-  ModalController
+  ModalController,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { ellipsisVerticalSharp } from 'ionicons/icons';
 import { EmployeeEditModalComponent } from '../../../components/modals/employee-edit-modal/employee-edit-modal.component';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
+import { Department } from 'src/app/models/department.model';
+import { Role } from 'src/app/models/role.model';
 
 @Component({
   selector: 'app-employee-list',
@@ -44,11 +48,17 @@ import { ToastService } from 'src/app/services/toast.service';
     IonGrid,
     IonRow,
     IonCol,
+    IonSpinner
   ]
 })
-export class EmployeeListComponent implements OnInit {
+export class EmployeeListComponent implements OnInit, OnDestroy {
 
   employees: Employee[] = [];
+  departments: Department[] = [];
+  roles: Role[] = [];
+  departmentsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
+
   constructor(
     private _employeeService: EmployeeService,
     private _departmentService: DepartmentService,
@@ -62,6 +72,7 @@ export class EmployeeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEmployees();
+    this.getDepartments();
   }
 
   /** Load all Employees */
@@ -69,9 +80,34 @@ export class EmployeeListComponent implements OnInit {
     this.employees = this._employeeService.getEmployees();
   }
 
+  /** Get all departments */
+  getDepartments(): void {
+    this.departmentsLoading = true;
+    this._departmentService.getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.departments = data;
+          this.departmentsLoading = false;
+        },
+        error: (error) => {
+          console.log(error.message);
+          this.departmentsLoading = false;
+        }
+      });
+
+    // Subscribe to the department added notification
+    this._departmentService.departmentsChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getDepartments();  // Reload departments when a new one is added
+      });
+  }
+
   /** Get Department name from DepartmentID */
   getDepartmentName(departmentID: number): string | undefined {
-    return this._departmentService.getDepartment(departmentID)?.departmentName;
+    const department = this.departments.find(dep => dep.departmentID == departmentID);
+    return department ? department.departmentName : undefined;
   }
 
   /** Get Role name from RoleID */
@@ -131,6 +167,11 @@ export class EmployeeListComponent implements OnInit {
       this.loadEmployees();
       this._toastService.presentSuccessToast("Employee deleted.");
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }
