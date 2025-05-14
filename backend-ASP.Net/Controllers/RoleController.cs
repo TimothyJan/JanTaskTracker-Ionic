@@ -15,32 +15,6 @@ namespace JanTaskTracker.Server.Controllers
             _repository = repository;
         }
 
-        // GET: api/Role/check-duplicate?name=TestName&departmentId=1
-        [HttpGet("check-duplicate")]
-        public async Task<ActionResult<bool>> CheckDuplicate(
-            [FromQuery] string name,
-            [FromQuery] int? departmentId = null)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return BadRequest(new { message = "Role name is required." });
-            }
-
-            try
-            {
-                bool isDuplicate = await _repository.CheckDuplicateNameAsync(name, departmentId);
-                return Ok(isDuplicate);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "An error occurred while checking for duplicate role names.",
-                    error = ex.Message
-                });
-            }
-        }
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleDTO>>> GetAllRoles()
         {
@@ -191,6 +165,47 @@ namespace JanTaskTracker.Server.Controllers
                     error = ex.Message
                 });
             }
+        }
+
+        // GET: api/Role/check-duplicate?name=TestName&departmentId=1
+        [HttpGet("check-duplicate")]
+        public async Task<ActionResult<bool>> CheckDuplicate(
+            [FromQuery] string name,
+            [FromQuery] int? departmentId = null)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return BadRequest(new { message = "Role name is required." });
+            }
+
+            try
+            {
+                bool isDuplicate = await _repository.CheckDuplicateNameAsync(name, departmentId);
+                return Ok(isDuplicate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while checking for duplicate role names.",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("name/{roleId}")]
+        public async Task<ActionResult<string>> GetRoleNameByRoleId(int roleId)
+        {
+            if (roleId <= 0)
+            {
+                return BadRequest("Role ID must be a positive number.");
+            }
+
+            var roleName = await _repository.GetRoleNameByRoleIdAsync(roleId);
+
+            return roleName is not null
+                ? Ok(roleName)
+                : NotFound($"Role with ID {roleId} not found.");
         }
     }
 }

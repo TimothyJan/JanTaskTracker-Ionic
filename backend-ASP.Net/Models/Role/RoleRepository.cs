@@ -111,6 +111,14 @@ namespace JanTaskTracker.Server.Models
             return await query.AnyAsync();
         }
 
+        public async Task<string?> GetRoleNameByRoleIdAsync(int roleId)
+        {
+            return await _context.Roles
+                .Where(r => r.RoleID == roleId)
+                .Select(r => r.RoleName)
+                .FirstOrDefaultAsync();
+        }
+
     }
 
 }
