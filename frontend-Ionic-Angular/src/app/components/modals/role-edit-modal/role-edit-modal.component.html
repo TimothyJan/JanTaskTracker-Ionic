@@ -1,42 +1,44 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
-    </ion-buttons>
-    <ion-title>Edit Role</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<div *ngIf="!roleSaving; else loadingBlock">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
+      </ion-buttons>
+      <ion-title>Edit Role</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content class="ion-padding">
+  <ion-content *ngIf="!roleLoading; else loadingBlock" class="ion-padding">
 
-  <ion-item>
-    <ion-input
-      label="Role Name:"
-      value={{editedRole.roleName}}
-      (ionInput)="onRoleNameInput($event)"
-      [(ngModel)]="editedRole.roleName">
-    </ion-input>
-  </ion-item>
+    <ion-item>
+      <ion-input
+        label="Role Name:"
+        value={{editedRole.roleName}}
+        (ionInput)="onRoleNameInput($event)"
+        [(ngModel)]="editedRole.roleName">
+      </ion-input>
+    </ion-item>
 
-  <ion-item *ngIf="">
-    <ion-select
-      placeholder="Select a Department"
-      [(ngModel)]="editedRole.departmentID">
-      >
-      <div slot="label">Department</div>
-      <ion-select-option
-        *ngFor="let department of departments"
-        [value]="department.departmentID">
-        {{ department.departmentName }}
-      </ion-select-option>
-    </ion-select>
-  </ion-item>
+    <ion-item *ngIf="!departmentsLoading; else loadingBlock">
+      <ion-select
+        placeholder="Select a Department"
+        [(ngModel)]="editedRole.departmentID">
+        >
+        <div slot="label">Department</div>
+        <ion-select-option
+          *ngFor="let department of departments"
+          [value]="department.departmentID">
+          {{ department.departmentName }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
 
-</ion-content>
+  </ion-content>
+</div>
 
-<ng-template #departmentsLoadingBlock>
+<ng-template #loadingBlock>
   <ion-spinner></ion-spinner>
 </ng-template>

@@ -6,11 +6,11 @@
     </ion-card-title>
   </ion-card-header>
 
-  <ion-card-content>
+  <ion-card-content *ngIf="!createRoleLoading; else loadingBlock">
     <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
 
       <ion-select
-        *ngIf="departmentsLoading; else departmentsLoadingBlock"
+        *ngIf="!departmentsLoading; else loadingBlock"
         id="departmentID"
         formControlName="departmentID"
         placeholder="Select a Department">
@@ -40,6 +40,6 @@
 
 </ion-card>
 
-<ng-template #departmentsLoadingBlock>
+<ng-template #loadingBlock>
   <ion-spinner></ion-spinner>
 </ng-template>

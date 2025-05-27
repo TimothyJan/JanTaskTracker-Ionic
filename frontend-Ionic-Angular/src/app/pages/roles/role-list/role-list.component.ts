@@ -54,6 +54,8 @@ export class RoleListComponent implements OnInit, OnDestroy {
   departments: Department[] = [];
   editModeRoleId: number | null = null;
   departmentsLoading: boolean = false;
+  rolesLoading: boolean = false;
+  deleteRoleLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -68,7 +70,7 @@ export class RoleListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getDepartments();
-    this.loadRoles();
+    this.getRoles();
   }
 
   /** Get all departments */
@@ -83,21 +85,39 @@ export class RoleListComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
 
-    // Subscribe to the department added notification
     this._departmentService.departmentsChanged$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(() => {
-        this.getDepartments();  // Reload departments when a new one is added
+        this.getDepartments();
       });
   }
 
-  /** Load all roles */
-  loadRoles(): void {
-    this.roles = this._roleService.getRoles();
+  /** Get all roles */
+  getRoles(): void {
+    this.rolesLoading = true;
+    this._roleService.getRoles()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (roles) => {
+          this.roles = roles;
+          this.rolesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.rolesLoading = false;
+        }
+      });
+
+    this._roleService.rolesChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getRoles();
+      });
   }
 
   /** Get Department name from DepartmentID */
@@ -145,18 +165,33 @@ export class RoleListComponent implements OnInit, OnDestroy {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.loadRoles();
+      this.getRoles();
       // console.log(data, role);
     }
   }
 
   /** Delete Role */
   onDelete(roleID: number): void {
+    this.deleteRoleLoading = true;
     const confirmDelete = confirm('Are you sure you want to delete this role?');
     if (confirmDelete) {
-      this._roleService.deleteRole(roleID);
-      this.loadRoles();
+      this._roleService.deleteRole(roleID)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (response) => {
+            this.getRoles();
+            this._toastService.presentSuccessToast("Role deleted.");
+            this.deleteRoleLoading = false;
+          },
+          error: (error) => {
+            this._toastService.presentErrorToast(error.message);
+            this.deleteRoleLoading = false;
+          }
+        });
       this._toastService.presentSuccessToast("Role deleted.");
+    }
+    else {
+      this.deleteRoleLoading = false;
     }
   }
 

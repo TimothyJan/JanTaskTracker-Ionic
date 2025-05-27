@@ -16,7 +16,7 @@ import {
   IonSpinner
 } from '@ionic/angular/standalone';
 import { ToastService } from 'src/app/services/toast.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-role-create',
@@ -41,6 +41,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class RoleCreateComponent implements OnInit, OnDestroy {
   departments: Department[] = [];
   departmentsLoading: boolean = false;
+  createRoleLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   roleForm: FormGroup = new FormGroup({
@@ -70,7 +71,7 @@ export class RoleCreateComponent implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
@@ -84,27 +85,45 @@ export class RoleCreateComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    this.createRoleLoading = true;
+
     if (this.roleForm.valid) {
-      const formValue = {
-        ...this.roleForm.value,
-        departmentID: Number(this.roleForm.value.departmentID)
+      const roleName = this.roleForm.controls["roleName"].value;
+      const departmentID = Number(this.roleForm.value.departmentID);
+      const roleData = {
+        roleName: roleName,
+        departmentID: departmentID
       };
-      if(!this._roleService.checkDuplicates(formValue)) {
-        this._roleService.addRole(formValue);
-        this.roleForm.reset();
-        this._roleService.notifyRolesChanged();
-        this._toastService.presentSuccessToast("Role created.");
-      }
-      else {
-        this._toastService.presentErrorToast("Role already exists.")
-      }
-    }
-    else {
-      this._toastService.presentErrorToast("Role failed to be created.");
+
+      this._roleService.checkDuplicates(roleName, departmentID)
+        .pipe(
+          takeUntil(this.unsubscribe$),
+          switchMap(isDuplicate => {
+            if (isDuplicate) {
+              throw new Error('Role already exists within department.');
+            }
+            return this._roleService.createRole(roleData);
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.roleForm.reset();
+            this._roleService.notifyRolesChanged();
+            this._toastService.presentSuccessToast("Role created successfully.");
+            this.createRoleLoading = false;
+          },
+          error: (error) => {
+            this._toastService.presentErrorToast(error.message);
+            this.createRoleLoading = false;
+          }
+        });
+    } else {
+      this._toastService.presentErrorToast("Please fill in all required fields correctly.");
+      this.createRoleLoading = false;
     }
   }
 
-  /** Capitalize departmentName input */
+  /** Capitalize roleName input */
   capitalizeRoleName(): void {
     this.roleForm.get('roleName')?.valueChanges.subscribe(val => {
       if (val) {

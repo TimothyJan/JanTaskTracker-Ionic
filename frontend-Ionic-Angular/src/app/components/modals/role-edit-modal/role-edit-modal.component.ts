@@ -48,7 +48,9 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
   departments: Department[] = [];
   originalRole: Role = {roleID: -1, roleName: "", departmentID: -1};
   editedRole: Role = {roleID: -1, roleName: "", departmentID: -1}; // Working copy
+  roleLoading: boolean = false;
   departmentsLoading: boolean = false;
+  roleSaving: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -59,20 +61,26 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getRole();
+    this.getRoleById();
     this.getDepartments();
   }
 
   /** Get Employee */
-  getRole(): void {
-    const role = this._roleService.getRole(this.roleID);
-    if (!role) {
-      console.error('Role not found');
-      this.modalCtrl.dismiss(null, 'error');
-      return;
-    }
-    this.originalRole = {...role};
-    this.editedRole = {...role};
+  getRoleById(): void {
+    this.roleLoading = true;
+    this._roleService.getRoleById(this.roleID)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (role) => {
+        this.originalRole = {...role};
+        this.editedRole = {...role};
+        this.roleLoading = false;
+      },
+      error: (error) => {
+        this._toastService.presentErrorToast(error.message);
+        this.roleLoading = false;
+      }
+    });
   }
 
   /** Get all departments */
@@ -86,7 +94,7 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
@@ -112,9 +120,20 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
 
   /** Save Changes */
   saveChanges(): void {
-    this._roleService.updateRole(this.editedRole);
-    this._roleService.notifyRolesChanged();
-    this._toastService.presentSuccessToast("Role saved.");
+    this.roleSaving = true;
+    this._roleService.updateRole(this.editedRole)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._roleService.notifyRolesChanged();
+          this._toastService.presentSuccessToast("Role saved.");
+          this.roleSaving = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.roleSaving = false;
+        }
+    });
   }
 
   /** Capitalize roleName input */
