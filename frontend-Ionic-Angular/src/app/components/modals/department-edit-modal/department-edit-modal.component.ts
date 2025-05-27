@@ -69,7 +69,7 @@ export class DepartmentEditModalComponent implements OnInit, OnDestroy {
           this.departmentLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentLoading = false;
         }
       });
@@ -100,13 +100,11 @@ export class DepartmentEditModalComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (response) => {
-        console.log(response);
         this._departmentService.notifyDepartmentsChanged();
         this._toastService.presentSuccessToast("Department saved.");
         this.departmentSaving = false;
       },
       error: (error) => {
-        console.log(error.message);
         this._toastService.presentErrorToast(error.message);
         this.departmentSaving = false;
       }

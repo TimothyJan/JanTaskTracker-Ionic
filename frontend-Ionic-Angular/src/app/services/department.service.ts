@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Department } from '../models/department.model';
-import { environment } from 'src/environments/environment.development.';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development.';
 
 const apiUrl = `${environment.apiUrl}/department`;
 

@@ -79,7 +79,7 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
@@ -90,11 +90,6 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.getDepartments();  // Reload departments when a new one is added
       });
-  }
-
-  /** Enter Edit mode for editting Department list */
-  enterEditMode(departmentId: number): void {
-    this.editModeDepartmentId = departmentId;
   }
 
   /** Action Sheet Controller */
@@ -137,7 +132,6 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
 
     if (role === 'confirm') {
       this.getDepartments();
-      // console.log(data, role);
     }
   }
 
@@ -155,7 +149,6 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
             this.deleteLoading = false;
           },
           error: (error) => {
-            console.log(error.message);
             this._toastService.presentErrorToast(error.message);
             this.deleteLoading = false;
           }

@@ -75,12 +75,7 @@ export class DepartmentCreateComponent implements OnInit, OnDestroy{
             this.createDepartmentLoading = false;
           },
           error: (error) => {
-            console.error(error);
-            this._toastService.presentErrorToast(
-              error.message === 'Department already exists.'
-                ? error.message
-                : "Department failed to be created."
-            );
+            this._toastService.presentErrorToast(error.message);
             this.createDepartmentLoading = false;
           }
         });
