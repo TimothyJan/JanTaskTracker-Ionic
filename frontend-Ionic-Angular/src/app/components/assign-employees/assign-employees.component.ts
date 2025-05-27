@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonSpinner
 } from '@ionic/angular/standalone';
+import { Subject, takeUntil } from 'rxjs';
 import { Employee } from 'src/app/models/employee.model';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { RoleService } from 'src/app/services/role.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-assign-employees',
@@ -18,18 +21,24 @@ import { RoleService } from 'src/app/services/role.service';
     CommonModule,
     FormsModule,
     IonSelect,
-    IonSelectOption
+    IonSelectOption,
+    IonSpinner
   ]
 })
-export class AssignEmployeesComponent  implements OnInit, OnChanges {
+export class AssignEmployeesComponent  implements OnInit, OnChanges, OnDestroy {
   employees: Employee[] = [];
+  employeesLoading: boolean = false;
+  roleLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
+
   @Input() assignedEmployeeIDs: number[] = [];
   @Output() employeesSelectedEvent = new EventEmitter<number[]>();
   selectedEmployees: Employee[] = [];
 
   constructor(
     private _employeeService: EmployeeService,
-    private _roleService: RoleService
+    private _roleService: RoleService,
+    private _toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -50,15 +59,40 @@ export class AssignEmployeesComponent  implements OnInit, OnChanges {
 
   /** Get all Employees from Employee service */
   getEmployees(): void {
-    this.employees = this._employeeService.getEmployees();
+    this.employeesLoading = true;
+    this._employeeService.getEmployees()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (employees) => {
+          this.employees = employees;
+          this.employeesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.employeesLoading = false;
+        }
+      });
   }
 
   /** Get RoleName with roleId from Role service */
   getRoleName(roleId: number): string {
-    let role = this._roleService.getRole(roleId);
-    if (role) {
-      return role.roleName;
-    }
+    this.roleLoading = true;
+    let role = this._roleService.getRoleById(roleId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (role) => {
+          if(role) {
+            this.roleLoading = false;
+            return role.roleName;
+          } else {
+            return "Unable to get role from role id";
+          }
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.roleLoading = false;
+        }
+      });
     return "Unable to get role";
   }
 
@@ -70,6 +104,11 @@ export class AssignEmployeesComponent  implements OnInit, OnChanges {
 
   compareEmployees(e1: Employee, e2: Employee): boolean {
     return e1 && e2 ? e1.employeeID === e2.employeeID : e1 === e2;
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

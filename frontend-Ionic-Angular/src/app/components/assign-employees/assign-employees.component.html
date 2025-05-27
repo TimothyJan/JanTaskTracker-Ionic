@@ -1,4 +1,5 @@
 <ion-select
+  *ngIf="!roleLoading; else loadingBlock"
   placeholder="Select Employees"
   [multiple]="true"
   [(ngModel)]="selectedEmployees"
@@ -7,7 +8,14 @@
 
   <div slot="label">Employees: </div>
 
-  <ion-select-option *ngFor="let employee of employees" [value]="employee">
-    {{ employee.name }} - {{ getRoleName(employee.roleID) }}
-  </ion-select-option>
+  <div *ngIf="!employeesLoading; else loadingBlock">
+    <ion-select-option *ngFor="let employee of employees" [value]="employee">
+      {{ employee.name }} - {{ getRoleName(employee.roleID) }}
+    </ion-select-option>
+  </div>
+
 </ion-select>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>
