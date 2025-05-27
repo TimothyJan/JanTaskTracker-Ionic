@@ -124,7 +124,8 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
       component: DepartmentEditModalComponent,
       componentProps: {
         departmentID: departmentID
-      }
+      },
+      cssClass: 'fullscreen-modal'
     });
     modal.present();
 

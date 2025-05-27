@@ -45,6 +45,8 @@ export class EmployeeCreateComponent implements OnInit, OnDestroy {
   departments: Department[] = [];
   roles: Role[] = [];
   departmentsLoading: boolean = false;
+  rolesLoading: boolean = false;
+  createEmployeeLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   employeeForm: FormGroup = new FormGroup({
@@ -77,41 +79,61 @@ export class EmployeeCreateComponent implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
-
-    // Subscribe to the department added notification
     this._departmentService.departmentsChanged$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(() => {
-        this.getDepartments();  // Reload departments when a new one is added
+        this.getDepartments();
       });
   }
 
   /** Department change updates the roles array to the selected Department Roles  */
   departmentSelectionChange(event: CustomEvent): void {
-    this.getRolesFromDepartmentID(event.detail.value);
+    this.getRolesFromDepartmentId(event.detail.value);
   }
 
   /** Roles array is updated to selected departmentID Department roles */
-  getRolesFromDepartmentID(departmentID: number): void {
-    this.roles = this._roleService.getRolesFromDepartmentID(departmentID);
+  getRolesFromDepartmentId(departmentID: number): void {
+    this.rolesLoading = true;
+    this._roleService.getRolesFromDepartmentId(departmentID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (roles) => {
+          this.roles = roles;
+          this.rolesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.rolesLoading = false;
+        }
+      });
   }
 
   onSubmit(): void {
+    this.createEmployeeLoading = true;
     if (this.employeeForm.valid) {
       const formValue = {
         ...this.employeeForm.value,
         departmentID: Number(this.employeeForm.value.departmentID),
         roleID: Number(this.employeeForm.value.roleID),
       }
-      // console.log('Form Submitted:', formValue);
-      this._employeeService.addEmployee(formValue);
-      this.employeeForm.reset();
-      this._employeeService.notifyEmployeesChanged();
-      this._toastService.presentSuccessToast("Employee created.");
+      this._employeeService.createEmployee(formValue)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.employeeForm.reset();
+            this._employeeService.notifyEmployeesChanged();
+            this._toastService.presentSuccessToast("Employee created.");
+            this.createEmployeeLoading = false;
+          },
+          error: (error) => {
+            this._toastService.presentErrorToast(error.message);
+            this.createEmployeeLoading = false;
+          }
+        });
     }
     else {
       this._toastService.presentErrorToast("Employee failed to be created.");

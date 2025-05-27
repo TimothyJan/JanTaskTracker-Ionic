@@ -54,7 +54,10 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   departments: Department[] = [];
   filteredRoles: Role[] = [];
 
+  employeeLoading: boolean = false;
   departmentsLoading: boolean = false;
+  filteredRolesLoading: boolean = false;
+  employeeSaving: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -66,21 +69,27 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getEmployee();
+    this.getEmployeeById();
     this.getDepartments();
-    this.filteredRoles= this._roleService.getRolesFromDepartmentID(this.originalEmployee.departmentID);
   }
 
   /** Get Employee */
-  getEmployee(): void {
-    const employee = this._employeeService.getEmployee(this.employeeID);
-    if (!employee) {
-      console.error('Employee not found');
-      this.modalCtrl.dismiss(null, 'error');
-      return;
-    }
-    this.originalEmployee = {...employee};
-    this.editedEmployee = {...employee};
+  getEmployeeById(): void {
+    this.employeeLoading = true;
+    const employee = this._employeeService.getEmployeeById(this.employeeID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (employee) => {
+          this.originalEmployee = {...employee};
+          this.editedEmployee = {...employee};
+          this.employeeLoading = false;
+          this.getRolesFromDepartmentId();
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.employeeLoading = false;
+        }
+      });
   }
 
   /** Get all departments */
@@ -94,7 +103,7 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
@@ -107,9 +116,39 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
       });
   }
 
+  /** Get filtered roles */
+  getRolesFromDepartmentId(): void {
+    this.filteredRolesLoading = true;
+    console.log(this.editedEmployee.departmentID);
+    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (filteredRoles) => {
+          this.filteredRoles = filteredRoles;
+          this.filteredRolesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.filteredRolesLoading = false;
+        }
+      });
+  }
+
   /** When department selection changes update the filteredRoles */
   changeFilteredRoles(event: CustomEvent): void {
-    this.filteredRoles= this._roleService.getRolesFromDepartmentID(this.editedEmployee.departmentID)
+    this.filteredRolesLoading = true;
+    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (filteredRoles) => {
+          this.filteredRoles = filteredRoles;
+          this.filteredRolesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.filteredRolesLoading = false;
+        }
+      });
   }
 
   /** Camcel and close modal */
@@ -125,9 +164,20 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
 
   /** save Changes */
   saveChanges(): void {
-    this._employeeService.updateEmployee(this.editedEmployee);
-    this._employeeService.notifyEmployeesChanged();
-    this._toastService.presentSuccessToast("Employee saved.");
+    this.employeeSaving = true;
+    this._employeeService.updateEmployee(this.editedEmployee)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._employeeService.notifyEmployeesChanged();
+          this._toastService.presentSuccessToast("Employee saved.");
+          this.employeeSaving = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.employeeSaving = false;
+        }
+    });
   }
 
   /** Capitalize Employee name input */

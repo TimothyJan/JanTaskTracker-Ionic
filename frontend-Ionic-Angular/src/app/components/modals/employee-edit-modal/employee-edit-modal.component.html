@@ -13,7 +13,7 @@
 <ion-content class="ion-padding">
   <ion-list>
 
-    <ion-item>
+    <ion-item *ngIf="!employeeLoading">
       <ion-input
         label="Employee Name:"
         value={{editedEmployee.name}}
@@ -22,7 +22,7 @@
       </ion-input>
     </ion-item>
 
-    <ion-item *ngIf="!departmentsLoading; else departmentsLoadingBlock">
+    <ion-item *ngIf="!departmentsLoading">
       <ion-select
         placeholder="Select a Department"
         (ionChange)="changeFilteredRoles($event)"
@@ -42,9 +42,11 @@
         placeholder="Select a Role"
         [(ngModel)]="editedEmployee.roleID">
         <div slot="label">Role</div>
-        <ion-select-option *ngFor="let role of filteredRoles" [value]="role.roleID">
-          {{ role.roleName }}
-        </ion-select-option>
+        <div *ngIf="!filteredRolesLoading">
+          <ion-select-option *ngFor="let role of filteredRoles" [value]="role.roleID">
+            {{ role.roleName }}
+          </ion-select-option>
+        </div>
       </ion-select>
     </ion-item>
 
@@ -60,6 +62,8 @@
   </ion-list>
 </ion-content>
 
-<ng-template #departmentsLoadingBlock>
+<div *ngIf="employeeSaving || employeeLoading || departmentsLoading || filteredRolesLoading">
   <ion-spinner></ion-spinner>
-</ng-template>
+</div>
+
+

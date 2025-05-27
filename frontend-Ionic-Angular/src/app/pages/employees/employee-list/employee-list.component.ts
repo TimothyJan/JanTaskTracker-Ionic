@@ -56,7 +56,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   employees: Employee[] = [];
   departments: Department[] = [];
   roles: Role[] = [];
+  employeesLoading: boolean = false;
   departmentsLoading: boolean = false;
+  rolesLoading: boolean = false;
+  roleNameLoading: boolean = false;
+  deleteEmployeeLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -71,13 +75,32 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadEmployees();
+    this.getEmployees();
     this.getDepartments();
+    this.getRoles();
   }
 
-  /** Load all Employees */
-  loadEmployees(): void {
-    this.employees = this._employeeService.getEmployees();
+  /** Get all Employees */
+  getEmployees(): void {
+    this.employeesLoading = true;
+    this._employeeService.getEmployees()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (employees) => {
+          this.employees = employees;
+          this.employeesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.employeesLoading = false;
+        }
+      });
+
+      this._employeeService.employeesChanged$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => {
+          this.getEmployees();
+        });
   }
 
   /** Get all departments */
@@ -91,16 +114,15 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
           this.departmentsLoading = false;
         },
         error: (error) => {
-          console.log(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.departmentsLoading = false;
         }
       });
 
-    // Subscribe to the department added notification
     this._departmentService.departmentsChanged$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(() => {
-        this.getDepartments();  // Reload departments when a new one is added
+        this.getDepartments();
       });
   }
 
@@ -110,9 +132,32 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     return department ? department.departmentName : undefined;
   }
 
+  /* Get all Roles */
+  getRoles(): void {
+    this.rolesLoading = true;
+    this._roleService.getRoles()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (roles) => {
+          this.roles = roles;
+          this.rolesLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.rolesLoading = false;
+        }
+      });
+    this._roleService.rolesChanged$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.getRoles();
+      })
+  }
+
   /** Get Role name from RoleID */
-  getRoleName(roleID: number): string | undefined {
-    return this._roleService.getRole(roleID)?.roleName;
+  getRoleName(roleID: number) {
+    const role = this.roles.find(role => role.roleID == roleID);
+    return role? role.roleName : undefined;
   }
 
   /** Action Sheet Controller */
@@ -154,18 +199,35 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.loadEmployees();
+      this.getEmployees();
       console.log(data, role);
     }
   }
 
   /** Deletes Employee */
   onDelete(employeeID: number): void {
+    this.deleteEmployeeLoading = true;
     const confirmDelete = confirm('Are you sure you want to delete this employee?');
     if (confirmDelete) {
-      this._employeeService.deleteEmployee(employeeID);
-      this.loadEmployees();
+      this._employeeService.deleteEmployee(employeeID)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (response) => {
+            this.getEmployees();
+            this._toastService.presentSuccessToast("Employee deleted");
+            this.deleteEmployeeLoading = false;
+          },
+          error: (error) => {
+            this._toastService.presentErrorToast(error.message);
+            this.deleteEmployeeLoading = false;
+          }
+        })
+
+      this.getEmployees();
       this._toastService.presentSuccessToast("Employee deleted.");
+    }
+    else {
+      this.deleteEmployeeLoading = false;
     }
   }
 

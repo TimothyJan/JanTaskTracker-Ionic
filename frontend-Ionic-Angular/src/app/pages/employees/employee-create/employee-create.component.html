@@ -7,10 +7,10 @@
   </ion-card-header>
 
   <ion-card-content>
-    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <form *ngIf="!createEmployeeLoading; else loadingBlock" [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
 
       <ion-select
-        *ngIf="!departmentsLoading; else departmentsLoadingBlock"
+        *ngIf="!departmentsLoading; else loadingBlock"
         id="departmentID"
         formControlName="departmentID"
         placeholder="Select a Department"
@@ -29,9 +29,12 @@
           placeholder="Select a Role"
           >
           <div slot="label">Role</div>
-          <ion-select-option *ngFor="let role of roles" [value]="role.roleID">
-            {{ role.roleName }}
-          </ion-select-option>
+          <div *ngIf="!rolesLoading; else loadingBlock">
+            <ion-select-option *ngFor="let role of roles" [value]="role.roleID">
+              {{ role.roleName }}
+            </ion-select-option>
+          </div>
+
         </ion-select>
       </div>
 
@@ -63,6 +66,6 @@
 
 </ion-card>
 
-<ng-template #departmentsLoadingBlock>
+<ng-template #loadingBlock>
   <ion-spinner></ion-spinner>
 </ng-template>

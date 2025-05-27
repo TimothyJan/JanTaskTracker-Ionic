@@ -12,7 +12,7 @@ import {
   IonTitle,
   IonToolbar,
   IonInput,
-  IonSpinner
+  IonSpinner,
 } from '@ionic/angular/standalone';
 import { Subject, takeUntil } from 'rxjs';
 import { Department } from 'src/app/models/department.model';
@@ -36,7 +36,7 @@ import { ToastService } from 'src/app/services/toast.service';
     IonTitle,
     IonToolbar,
     IonInput,
-    IonSpinner
+    IonSpinner,
   ]
 })
 export class DepartmentEditModalComponent implements OnInit, OnDestroy {
@@ -97,18 +97,18 @@ export class DepartmentEditModalComponent implements OnInit, OnDestroy {
   saveChanges(): void {
     this.departmentSaving = true;
     this._departmentService.updateDepartment(this.editedDepartment)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (response) => {
-        this._departmentService.notifyDepartmentsChanged();
-        this._toastService.presentSuccessToast("Department saved.");
-        this.departmentSaving = false;
-      },
-      error: (error) => {
-        this._toastService.presentErrorToast(error.message);
-        this.departmentSaving = false;
-      }
-    });
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._departmentService.notifyDepartmentsChanged();
+          this._toastService.presentSuccessToast("Department saved.");
+          this.departmentSaving = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.departmentSaving = false;
+        }
+      });
   }
 
   /** Capitalize departmentName input */
