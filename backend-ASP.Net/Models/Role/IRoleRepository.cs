@@ -9,6 +9,5 @@
         Task DeleteRoleAsync(int id);
         Task<IEnumerable<RoleDTO>> GetRolesByDepartmentIdAsync(int departmentId);
         Task<bool> CheckDuplicateNameAsync(string name, int? departmentId = null, int? excludeRoleId = null);
-        Task<string?> GetRoleNameByRoleIdAsync(int roleId);
     }
 }

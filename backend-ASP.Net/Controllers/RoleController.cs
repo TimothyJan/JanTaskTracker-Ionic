@@ -192,20 +192,5 @@ namespace JanTaskTracker.Server.Controllers
                 });
             }
         }
-
-        [HttpGet("name/{roleId}")]
-        public async Task<ActionResult<string>> GetRoleNameByRoleId(int roleId)
-        {
-            if (roleId <= 0)
-            {
-                return BadRequest("Role ID must be a positive number.");
-            }
-
-            var roleName = await _repository.GetRoleNameByRoleIdAsync(roleId);
-
-            return roleName is not null
-                ? Ok(roleName)
-                : NotFound($"Role with ID {roleId} not found.");
-        }
     }
 }
