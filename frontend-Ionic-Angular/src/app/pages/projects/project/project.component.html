@@ -1,4 +1,4 @@
-<ion-card class="ion-card" color="medium">
+<ion-card class="ion-card" color="medium" *ngIf="!deleteProjectLoading; else loadingBlock">
 
   <ion-card-header>
     <ion-grid class="ion-no-padding">
@@ -38,16 +38,23 @@
     </ion-grid>
   </ion-card-header>
 
-  <ion-card-content>
-    <div *ngIf="listOfProjectTaskIDs.length>0; else noProjectTasksBlock">
-      <ion-list class="ion-text-center" *ngFor="let projectTaskID of listOfProjectTaskIDs">
-        <ion-item>
-          <app-project-task [projectTaskID]="projectTaskID"></app-project-task>
-        </ion-item>
-      </ion-list>
+  <ion-card-content *ngIf="!projectLoading; else loadingBlock">
+    <div *ngIf="!listOfProjectTaskIDsLoading; else loadingBlock">
+      <div *ngIf="listOfProjectTaskIDs.length>0; else noProjectTasksBlock">
+        <ion-list class="ion-text-center" *ngFor="let projectTaskID of listOfProjectTaskIDs">
+          <ion-item>
+            <app-project-task [projectTaskID]="projectTaskID"></app-project-task>
+          </ion-item>
+        </ion-list>
+      </div>
     </div>
+
     <ng-template #noProjectTasksBlock>
       No Project Tasks
     </ng-template>
   </ion-card-content>
 </ion-card>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

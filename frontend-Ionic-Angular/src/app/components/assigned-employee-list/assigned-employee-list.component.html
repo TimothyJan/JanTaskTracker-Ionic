@@ -1,17 +1,20 @@
-<div *ngIf="projectTask.assignedEmployeeIDs; else noAssignedEmployees">
-  <ion-list>
-    <ion-list-header>
-      Assigned Employees:
-    </ion-list-header>
-    <div *ngIf="!rolesLoading; else loadingBlock">
-      <ion-item *ngFor="let employeeID of projectTask.assignedEmployeeIDs">
-        <ion-text>
-          {{ getEmployeeNameAndRoleNameByEmployeeID(employeeID) }}
-        </ion-text>
-      </ion-item>
-    </div>
-  </ion-list>
+<div *ngIf="!projectTaskLoading; else loadingBlock">
+  <div *ngIf="projectTask.assignedEmployeeIds; else noAssignedEmployees">
+    <ion-list>
+      <ion-list-header>
+        Assigned Employees:
+      </ion-list-header>
+      <div *ngIf="!rolesLoading; else loadingBlock">
+        <ion-item *ngFor="let employeeID of projectTask.assignedEmployeeIds">
+          <ion-text>
+            {{ getEmployeeNameAndRoleNameByEmployeeID(employeeID) }}
+          </ion-text>
+        </ion-item>
+      </div>
+    </ion-list>
+  </div>
 </div>
+
 
 <ng-template #noAssignedEmployees>
   No assigned employees

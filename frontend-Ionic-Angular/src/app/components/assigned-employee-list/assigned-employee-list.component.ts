@@ -32,9 +32,11 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
   @Input() projectTaskID: number = 0;
-  roles: Role[] = [];
-  employees: Employee[] = [];
   projectTask: ProjectTask = new ProjectTask(0, 0, "", "", "Not Started");
+  employees: Employee[] = [];
+  roles: Role[] = [];
+
+  projectTaskLoading: boolean = false;
   employeesLoading: boolean = false;
   rolesLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
@@ -61,7 +63,19 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
 
   /** Get ProjectTask by ID */
   getProjectTaskByID(): void {
-    this.projectTask = this._projectTaskService.getProjectTaskByID(this.projectTaskID);
+    this.projectTaskLoading = true;
+    this._projectTaskService.getProjectTaskById(this.projectTaskID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.projectTask = data;
+          this.projectTaskLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectTaskLoading = false;
+        }
+      })
   }
 
   /** Get all Employees */
@@ -87,13 +101,6 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
         });
   }
 
-  /** Get User by employeeID */
-  getEmployeeNameAndRoleNameByEmployeeID(employeeID: number) {
-    const employee = this.employees.find(emp => emp.employeeID == employeeID);
-    const role = this.roles.find(role => role.roleID == employee?.roleID);
-    return employee?.name + " - " + role?.roleName;
-  }
-
   /* Get all Roles */
   getRoles(): void {
     this.rolesLoading = true;
@@ -114,6 +121,13 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
       .subscribe(() => {
         this.getRoles();
       })
+  }
+
+  /** Get User by employeeID */
+  getEmployeeNameAndRoleNameByEmployeeID(employeeID: number) {
+    const employee = this.employees.find(emp => emp.employeeID == employeeID);
+    const role = this.roles.find(role => role.roleID == employee?.roleID);
+    return employee?.name + " - " + role?.roleName;
   }
 
   ngOnDestroy() {

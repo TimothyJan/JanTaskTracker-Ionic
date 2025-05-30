@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ModalController,
@@ -11,6 +11,7 @@ import {
   IonContent,
   IonList,
   IonItem,
+  IonSpinner
 } from '@ionic/angular/standalone'
 import { Project } from 'src/app/models/project.model';
 import { ProjectService } from 'src/app/services/project.service';
@@ -19,6 +20,7 @@ import { StatusSelectorComponent } from "../../status-selector/status-selector.c
 import { TextAreaComponent } from "../../text-area/text-area.component";
 import { DateSelectorComponent } from "../../date-selector/date-selector.component";
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-project-edit-modal',
@@ -40,14 +42,19 @@ import { ToastService } from 'src/app/services/toast.service';
     StatusSelectorComponent,
     TextAreaComponent,
     DateSelectorComponent,
+    IonSpinner
   ]
 })
 
-export class ProjectEditModalComponent implements OnInit {
+export class ProjectEditModalComponent implements OnInit, OnDestroy {
   @Input() projectID: number = -1;
 
   originalProject: Project = new Project(-1, "", "", "Not Started", new Date(), new Date());
   editedProject: Project = new Project(-1, "", "", "Not Started", new Date(), new Date());
+
+  projectLoading: boolean = false;
+  projectSaveLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -61,14 +68,27 @@ export class ProjectEditModalComponent implements OnInit {
 
   /** Get project with projectID */
   getProject(): void {
-    const project = this._projectService.getProjectByID(this.projectID);
-    if(project) {
-      this.originalProject = {...project};
-      this.editedProject = {...project};
-    }
-    else {
-      this._toastService.presentErrorToast("Unable to retrieve project");
-    }
+    this.projectLoading = true;
+    this._projectService.getProjectById(this.projectID)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          const project = data;
+          if(project) {
+            this.originalProject = {...project};
+            this.editedProject = {...project};
+          }
+          else {
+            this._toastService.presentErrorToast("Unable to retrieve project");
+          }
+          this.projectLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectLoading = false;
+        }
+      })
+
   }
 
   /** Camcel and close modal */
@@ -113,9 +133,25 @@ export class ProjectEditModalComponent implements OnInit {
 
   /** Save edits to project */
   saveChanges(): void {
-    this._projectService.updateProject(this.editedProject);
-    this._projectService.notifyProjectsChanged();
-    this._toastService.presentSuccessToast("Project saved.");
+    this.projectSaveLoading = true;
+    this._projectService.updateProject(this.editedProject)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._projectService.notifyProjectsChanged();
+          this._toastService.presentSuccessToast("Project saved.");
+          this.projectSaveLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectSaveLoading = false;
+        }
+      })
+
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 }

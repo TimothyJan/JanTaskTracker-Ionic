@@ -1,6 +1,6 @@
 <app-sidemenu [title]="'Projects'"></app-sidemenu>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding" *ngIf="!listOfProjectIDsLoading; else loadingBlock">
 
   <div class="ion-text-center">
     <ion-button (click)="openProjectCreateModal()">Create New Project</ion-button>
@@ -18,3 +18,7 @@
   </ng-template>
 
 </ion-content>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

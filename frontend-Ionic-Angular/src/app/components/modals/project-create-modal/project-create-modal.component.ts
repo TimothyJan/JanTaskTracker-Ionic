@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ModalController,
@@ -11,6 +11,7 @@ import {
   IonContent,
   IonList,
   IonItem,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { InputComponent } from "../../input/input.component";
 import { StatusSelectorComponent } from "../../status-selector/status-selector.component";
@@ -19,6 +20,7 @@ import { DateSelectorComponent } from "../../date-selector/date-selector.compone
 import { Project } from 'src/app/models/project.model';
 import { ProjectService } from 'src/app/services/project.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-project-create-modal',
@@ -42,9 +44,10 @@ import { ToastService } from 'src/app/services/toast.service';
     StatusSelectorComponent,
     TextAreaComponent,
     DateSelectorComponent,
+    IonSpinner
 ]
 })
-export class ProjectCreateModalComponent {
+export class ProjectCreateModalComponent implements OnDestroy {
 
   projectForm: FormGroup = new FormGroup({
     projectName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
@@ -53,6 +56,9 @@ export class ProjectCreateModalComponent {
     startDate: new FormControl(""),
     dueDate: new FormControl("")
   });
+
+  projectCreateLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -105,6 +111,7 @@ export class ProjectCreateModalComponent {
 
   /** Add Project */
   createProject(): void {
+    this.projectCreateLoading = true;
     const newProject = new Project(
       0,
       this.projectForm.controls["projectName"].value,
@@ -113,9 +120,24 @@ export class ProjectCreateModalComponent {
       this.projectForm.controls["startDate"].value,
       this.projectForm.controls["dueDate"].value,
     );
-    this._projectService.createProject(newProject);
-    this._projectService.notifyProjectsChanged();
-    this._toastService.presentSuccessToast("Project created.");
+    this._projectService.createProject(newProject)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._projectService.notifyProjectsChanged();
+          this._toastService.presentSuccessToast("Project created.");
+          this.projectCreateLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectCreateLoading = false;
+        }
+      })
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

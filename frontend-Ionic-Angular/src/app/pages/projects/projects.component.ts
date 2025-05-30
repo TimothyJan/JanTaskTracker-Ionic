@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   IonContent,
   IonButton,
   IonList,
   IonItem,
-  ModalController
+  ModalController,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { SidemenuComponent } from "../../components/sidemenu/sidemenu.component";
 import { CommonModule } from '@angular/common';
 import { ProjectComponent } from "./project/project.component";
 import { ProjectService } from 'src/app/services/project.service';
 import { ProjectCreateModalComponent } from 'src/app/components/modals/project-create-modal/project-create-modal.component';
+import { Subject, takeUntil } from 'rxjs';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-projects',
@@ -24,30 +27,46 @@ import { ProjectCreateModalComponent } from 'src/app/components/modals/project-c
     IonButton,
     IonList,
     IonItem,
-    ProjectComponent
+    ProjectComponent,
+    IonSpinner
 ],
 })
 
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent implements OnInit, OnDestroy {
   listOfProjectIDs: number[] = [];
+  listOfProjectIDsLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private _projectService: ProjectService,
     private modalCtrl: ModalController,
+    private _toastService: ToastService
   ) { }
 
   ngOnInit() {
-    this.getListOfProjectIDs();
+    this.getListOfProjectIds();
 
     // Subscribe to changes in projects, specifically for deletion
     this._projectService.projectsChanged$.subscribe(() => {
-      this.getListOfProjectIDs();
+      this.getListOfProjectIds();
     });
   }
 
   /** Get list of ProjectIDs */
-  getListOfProjectIDs(): void {
-    this.listOfProjectIDs = this._projectService.getListOfProjectIDs();
+  getListOfProjectIds(): void {
+    this.listOfProjectIDsLoading = true;
+    this._projectService.getListOfProjectIds()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.listOfProjectIDs = data;
+          this.listOfProjectIDsLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.listOfProjectIDsLoading = false;
+        }
+      })
   }
 
   /** open Project Create Modal */
@@ -63,6 +82,11 @@ export class ProjectsComponent implements OnInit {
     if (role === 'confirm') {
       // console.log(data, role);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

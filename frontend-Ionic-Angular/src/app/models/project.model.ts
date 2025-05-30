@@ -1,5 +1,5 @@
 export class Project {
-  projectID: number;
+  projectId: number;
   projectName: string;
   description: string;
   status: "Not Started" | "Active" | "Completed";
@@ -7,14 +7,14 @@ export class Project {
   dueDate?: Date;
 
   constructor(
-    projectID: number,
+    projectId: number,
     projectName: string,
     description: string,
     status: "Not Started" | "Active" | "Completed",
     startDate?: Date,
     dueDate?: Date,
   ) {
-    this.projectID = projectID;
+    this.projectId = projectId;
     this.projectName = projectName;
     this.description = description;
     this.status = status;
