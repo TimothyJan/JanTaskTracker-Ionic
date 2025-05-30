@@ -6,10 +6,7 @@
     </ion-card-title>
   </ion-card-header>
 
-  <ion-card-content>
-    <div *ngIf="!departmentsLoading; else loadingBlock">
-
-    </div>
+  <ion-card-content *ngIf="!departmentsLoading; else loadingBlock">
     <ion-list *ngIf="departments.length>0; else noDepartmentsBlock">
 
       <ion-item>

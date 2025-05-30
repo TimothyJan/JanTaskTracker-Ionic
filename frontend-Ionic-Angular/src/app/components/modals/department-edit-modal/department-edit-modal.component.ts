@@ -42,7 +42,8 @@ import { ToastService } from 'src/app/services/toast.service';
 export class DepartmentEditModalComponent implements OnInit, OnDestroy {
   @Input() departmentID: number = -1;
   originalDepartment: Department = {departmentID: -1, departmentName: ""};
-  editedDepartment: Department = {departmentID: -1, departmentName: ""}; // Working copy
+  editedDepartment: Department = {departmentID: -1, departmentName: ""};
+
   departmentLoading: boolean = false;
   departmentSaving: boolean = false;
   private unsubscribe$ = new Subject<void>();

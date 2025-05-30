@@ -213,7 +213,7 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: (response) => {
-            this.getEmployees();
+            this._employeeService.notifyEmployeesChanged();
             this._toastService.presentSuccessToast("Employee deleted");
             this.deleteEmployeeLoading = false;
           },

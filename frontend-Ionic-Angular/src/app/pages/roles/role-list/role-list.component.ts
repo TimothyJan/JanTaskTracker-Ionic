@@ -179,7 +179,7 @@ export class RoleListComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: (response) => {
-            this.getRoles();
+            this._roleService.notifyRolesChanged();
             this._toastService.presentSuccessToast("Role deleted.");
             this.deleteRoleLoading = false;
           },

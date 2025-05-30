@@ -48,7 +48,6 @@ import { Subject, takeUntil } from 'rxjs';
   ]
 })
 export class DepartmentListComponent implements OnInit, OnDestroy {
-
   departments: Department[] = [];
   editModeDepartmentId: number | null = null;
   departmentsLoading: boolean = false;
@@ -145,7 +144,7 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            this.getDepartments();
+            this._departmentService.notifyDepartmentsChanged();
             this._toastService.presentSuccessToast("Department deleted.");
             this.deleteLoading = false;
           },
