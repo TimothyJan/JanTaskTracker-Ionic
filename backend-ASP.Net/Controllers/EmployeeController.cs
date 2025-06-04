@@ -33,13 +33,13 @@ namespace JanTaskTracker.Server.Controllers
         public async Task<IActionResult> CreateEmployee(EmployeeDTO employeeDto)
         {
             await _repository.CreateEmployeeAsync(employeeDto);
-            return CreatedAtAction(nameof(GetEmployeeById), new { id = employeeDto.EmployeeID }, employeeDto);
+            return CreatedAtAction(nameof(GetEmployeeById), new { id = employeeDto.EmployeeId }, employeeDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, EmployeeDTO employeeDto)
         {
-            if (id != employeeDto.EmployeeID) return BadRequest();
+            if (id != employeeDto.EmployeeId) return BadRequest();
 
             await _repository.UpdateEmployeeAsync(employeeDto);
             return NoContent();

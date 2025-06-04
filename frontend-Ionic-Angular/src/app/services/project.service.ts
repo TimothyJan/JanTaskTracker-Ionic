@@ -20,7 +20,7 @@ export class ProjectService {
     return this.http.get<Project[]>(`${apiUrl}`);
   }
 
-  /** Get a project by ID */
+  /** Get a project by Id */
   getProjectById(projectId: number): Observable<Project> {
     return this.http.get<Project>(`${apiUrl}/${projectId}`);
   }

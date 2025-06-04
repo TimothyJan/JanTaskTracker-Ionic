@@ -2,8 +2,8 @@
 {
     public class RoleDTO
     {
-        public int RoleID { get; set; }
+        public int RoleId { get; set; }
         public string RoleName { get; set; }
-        public int DepartmentID { get; set; } // Optional: Include if you want to link it to a Department
+        public int DepartmentId { get; set; } // Optional: Include if you want to link it to a Department
     }
 }

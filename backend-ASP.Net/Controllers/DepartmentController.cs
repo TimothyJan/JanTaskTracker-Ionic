@@ -8,9 +8,9 @@ namespace JanTaskTracker.Server.Controllers
     [ApiController]
     public class DepartmentController : ControllerBase
     {
-        private readonly IDepartmentRepository _repository;
+        private readonly IdepartmentRepository _repository;
 
-        public DepartmentController(IDepartmentRepository repository)
+        public DepartmentController(IdepartmentRepository repository)
         {
             _repository = repository;
         }
@@ -39,13 +39,13 @@ namespace JanTaskTracker.Server.Controllers
                 var department = await _repository.GetDepartmentByIdAsync(id);
                 if (department == null)
                 {
-                    return NotFound(new { message = $"Department with ID {id} not found." });
+                    return NotFound(new { message = $"Department with Id {id} not found." });
                 }
                 return Ok(department);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"An error occurred while retrieving department with ID {id}.", error = ex.Message });
+                return StatusCode(500, new { message = $"An error occurred while retrieving department with Id {id}.", error = ex.Message });
             }
         }
 
@@ -62,7 +62,7 @@ namespace JanTaskTracker.Server.Controllers
 
             return CreatedAtAction(
                 nameof(GetDepartmentById),
-                new { id = departmentDto.DepartmentID },
+                new { id = departmentDto.DepartmentId },
                 departmentDto);
         }
 
@@ -72,9 +72,9 @@ namespace JanTaskTracker.Server.Controllers
         {
             try
             {
-                if (id != departmentDto.DepartmentID)
+                if (id != departmentDto.DepartmentId)
                 {
-                    return BadRequest(new { message = "Department ID in URL does not match ID in request body." });
+                    return BadRequest(new { message = "Department Id in URL does not match Id in request body." });
                 }
 
                 // Validate input
@@ -87,7 +87,7 @@ namespace JanTaskTracker.Server.Controllers
                 var existingDepartment = await _repository.GetDepartmentByIdAsync(id);
                 if (existingDepartment == null)
                 {
-                    return NotFound(new { message = $"Department with ID {id} not found." });
+                    return NotFound(new { message = $"Department with Id {id} not found." });
                 }
 
                 // Only check for duplicates if the name is being changed
@@ -108,7 +108,7 @@ namespace JanTaskTracker.Server.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"An error occurred while updating department with ID {id}.", error = ex.Message });
+                return StatusCode(500, new { message = $"An error occurred while updating department with Id {id}.", error = ex.Message });
             }
         }
 
@@ -121,7 +121,7 @@ namespace JanTaskTracker.Server.Controllers
                 var departmentExists = await _repository.GetDepartmentByIdAsync(id) != null;
                 if (!departmentExists)
                 {
-                    return NotFound(new { message = $"Department with ID {id} not found." });
+                    return NotFound(new { message = $"Department with Id {id} not found." });
                 }
 
                 await _repository.DeleteDepartmentAsync(id);
@@ -129,7 +129,7 @@ namespace JanTaskTracker.Server.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"An error occurred while deleting department with ID {id}.", error = ex.Message });
+                return StatusCode(500, new { message = $"An error occurred while deleting department with Id {id}.", error = ex.Message });
             }
         }
 

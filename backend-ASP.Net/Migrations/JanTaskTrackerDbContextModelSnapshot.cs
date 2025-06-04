@@ -24,48 +24,48 @@ namespace JanTaskTrackerAPI.Migrations
 
             modelBuilder.Entity("JanTaskTracker.Server.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentID")
+                    b.Property<int>("DepartmentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("DepartmentID");
+                    b.HasKey("DepartmentId");
 
                     b.ToTable("Departments");
 
                     b.HasData(
                         new
                         {
-                            DepartmentID = 1,
+                            DepartmentId = 1,
                             DepartmentName = "Finance"
                         },
                         new
                         {
-                            DepartmentID = 2,
+                            DepartmentId = 2,
                             DepartmentName = "Human Resources"
                         },
                         new
                         {
-                            DepartmentID = 3,
+                            DepartmentId = 3,
                             DepartmentName = "Information Technology"
                         });
                 });
 
             modelBuilder.Entity("JanTaskTracker.Server.Models.Employee", b =>
                 {
-                    b.Property<int>("EmployeeID")
+                    b.Property<int>("EmployeeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
 
-                    b.Property<int>("DepartmentID")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -73,43 +73,43 @@ namespace JanTaskTrackerAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("RoleID")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.HasKey("EmployeeID");
+                    b.HasKey("EmployeeId");
 
-                    b.HasIndex("DepartmentID");
+                    b.HasIndex("DepartmentId");
 
-                    b.HasIndex("RoleID");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Employees");
 
                     b.HasData(
                         new
                         {
-                            EmployeeID = 1,
-                            DepartmentID = 1,
+                            EmployeeId = 1,
+                            DepartmentId = 1,
                             Name = "Bob Smith",
-                            RoleID = 2,
+                            RoleId = 2,
                             Salary = 70000m
                         },
                         new
                         {
-                            EmployeeID = 2,
-                            DepartmentID = 2,
+                            EmployeeId = 2,
+                            DepartmentId = 2,
                             Name = "Catherine Green",
-                            RoleID = 5,
+                            RoleId = 5,
                             Salary = 65000m
                         },
                         new
                         {
-                            EmployeeID = 3,
-                            DepartmentID = 3,
+                            EmployeeId = 3,
+                            DepartmentId = 3,
                             Name = "David Brown",
-                            RoleID = 7,
+                            RoleId = 7,
                             Salary = 90000m
                         });
                 });
@@ -254,13 +254,13 @@ namespace JanTaskTrackerAPI.Migrations
 
             modelBuilder.Entity("JanTaskTracker.Server.Models.Role", b =>
                 {
-                    b.Property<int>("RoleID")
+                    b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
-                    b.Property<int>("DepartmentID")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("RoleName")
@@ -268,71 +268,71 @@ namespace JanTaskTrackerAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("RoleID");
+                    b.HasKey("RoleId");
 
-                    b.HasIndex("DepartmentID");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Roles");
 
                     b.HasData(
                         new
                         {
-                            RoleID = 1,
-                            DepartmentID = 1,
+                            RoleId = 1,
+                            DepartmentId = 1,
                             RoleName = "Accountant"
                         },
                         new
                         {
-                            RoleID = 2,
-                            DepartmentID = 1,
+                            RoleId = 2,
+                            DepartmentId = 1,
                             RoleName = "Financial Analyst"
                         },
                         new
                         {
-                            RoleID = 3,
-                            DepartmentID = 1,
+                            RoleId = 3,
+                            DepartmentId = 1,
                             RoleName = "Finance Manager"
                         },
                         new
                         {
-                            RoleID = 4,
-                            DepartmentID = 2,
+                            RoleId = 4,
+                            DepartmentId = 2,
                             RoleName = "HR Assistant"
                         },
                         new
                         {
-                            RoleID = 5,
-                            DepartmentID = 2,
+                            RoleId = 5,
+                            DepartmentId = 2,
                             RoleName = "HR Specialist"
                         },
                         new
                         {
-                            RoleID = 6,
-                            DepartmentID = 2,
+                            RoleId = 6,
+                            DepartmentId = 2,
                             RoleName = "HR Director"
                         },
                         new
                         {
-                            RoleID = 7,
-                            DepartmentID = 3,
+                            RoleId = 7,
+                            DepartmentId = 3,
                             RoleName = "Software Engineer"
                         },
                         new
                         {
-                            RoleID = 8,
-                            DepartmentID = 3,
+                            RoleId = 8,
+                            DepartmentId = 3,
                             RoleName = "Front-End Developer"
                         },
                         new
                         {
-                            RoleID = 9,
-                            DepartmentID = 3,
+                            RoleId = 9,
+                            DepartmentId = 3,
                             RoleName = "Back-End Developer"
                         },
                         new
                         {
-                            RoleID = 10,
-                            DepartmentID = 3,
+                            RoleId = 10,
+                            DepartmentId = 3,
                             RoleName = "Full-Stack Developer"
                         });
                 });
@@ -341,13 +341,13 @@ namespace JanTaskTrackerAPI.Migrations
                 {
                     b.HasOne("JanTaskTracker.Server.Models.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("DepartmentID")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JanTaskTracker.Server.Models.Role", "Role")
                         .WithMany("Employees")
-                        .HasForeignKey("RoleID")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -360,7 +360,7 @@ namespace JanTaskTrackerAPI.Migrations
                 {
                     b.HasOne("JanTaskTracker.Server.Models.Department", "Department")
                         .WithMany("Roles")
-                        .HasForeignKey("DepartmentID")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

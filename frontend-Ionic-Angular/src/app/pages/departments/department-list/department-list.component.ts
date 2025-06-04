@@ -98,12 +98,12 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
       buttons: [
         {
           text: 'Edit',
-          handler: () => this.openDepartmentEditModal(department.departmentID),
+          handler: () => this.openDepartmentEditModal(department.departmentId),
         },
         {
           text: 'Delete',
           role: 'destructive',
-          handler: () => this.onDelete(department.departmentID),
+          handler: () => this.onDelete(department.departmentId),
         },
         {
           text: 'Cancel',
@@ -118,11 +118,11 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
   }
 
   /** Opens Department Edit Modal */
-  async openDepartmentEditModal(departmentID: number) {
+  async openDepartmentEditModal(departmentId: number) {
     const modal = await this.modalCtrl.create({
       component: DepartmentEditModalComponent,
       componentProps: {
-        departmentID: departmentID
+        departmentId: departmentId
       },
       cssClass: 'fullscreen-modal'
     });
@@ -136,11 +136,11 @@ export class DepartmentListComponent implements OnInit, OnDestroy {
   }
 
   /** Delete Department */
-  onDelete(departmentID: number): void {
+  onDelete(departmentId: number): void {
     const confirmDelete = confirm('Are you sure you want to delete this department?');
     if (confirmDelete) {
       this.deleteLoading = true;
-      this._departmentService.deleteDepartment(departmentID)
+      this._departmentService.deleteDepartment(departmentId)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {

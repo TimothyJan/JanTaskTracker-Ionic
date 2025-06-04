@@ -2,7 +2,7 @@
 
 namespace JanTaskTracker.Server.Models
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : IdepartmentRepository
     {
         private readonly JanTaskTrackerDbContext _context;
 
@@ -16,7 +16,7 @@ namespace JanTaskTracker.Server.Models
             return await _context.Departments
                 .Select(d => new DepartmentDTO
                 {
-                    DepartmentID = d.DepartmentID,
+                    DepartmentId = d.DepartmentId,
                     DepartmentName = d.DepartmentName
                 })
                 .ToListAsync();
@@ -29,7 +29,7 @@ namespace JanTaskTracker.Server.Models
 
             return new DepartmentDTO
             {
-                DepartmentID = department.DepartmentID,
+                DepartmentId = department.DepartmentId,
                 DepartmentName = department.DepartmentName
             };
         }
@@ -47,7 +47,7 @@ namespace JanTaskTracker.Server.Models
                 _context.Departments.Add(department);
                 await _context.SaveChangesAsync();
 
-                departmentDto.DepartmentID = department.DepartmentID;
+                departmentDto.DepartmentId = department.DepartmentId;
                 await transaction.CommitAsync();
             }
             catch
@@ -59,7 +59,7 @@ namespace JanTaskTracker.Server.Models
 
         public async Task UpdateDepartmentAsync(DepartmentDTO departmentDto)
         {
-            var department = await _context.Departments.FindAsync(departmentDto.DepartmentID);
+            var department = await _context.Departments.FindAsync(departmentDto.DepartmentId);
             if (department == null) return;
 
             department.DepartmentName = departmentDto.DepartmentName;

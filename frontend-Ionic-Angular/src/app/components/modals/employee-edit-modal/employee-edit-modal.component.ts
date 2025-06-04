@@ -48,9 +48,9 @@ import { ToastService } from 'src/app/services/toast.service';
   ],
 })
 export class EmployeeEditModalComponent implements OnInit, OnDestroy {
-  @Input() employeeID: number = -1;
-  originalEmployee: Employee = {employeeID:-1, name:"", salary:-1, departmentID:-1, roleID:-1};
-  editedEmployee: Employee = {employeeID:-1, name:"", salary:-1, departmentID:-1, roleID:-1};
+  @Input() employeeId: number = -1;
+  originalEmployee: Employee = {employeeId:-1, name:"", salary:-1, departmentId:-1, roleId:-1};
+  editedEmployee: Employee = {employeeId:-1, name:"", salary:-1, departmentId:-1, roleId:-1};
   departments: Department[] = [];
   filteredRoles: Role[] = [];
 
@@ -76,7 +76,7 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   /** Get Employee */
   getEmployeeById(): void {
     this.employeeLoading = true;
-    const employee = this._employeeService.getEmployeeById(this.employeeID)
+    const employee = this._employeeService.getEmployeeById(this.employeeId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (employee) => {
@@ -119,8 +119,8 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   /** Get filtered roles */
   getRolesFromDepartmentId(): void {
     this.filteredRolesLoading = true;
-    console.log(this.editedEmployee.departmentID);
-    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentID)
+    console.log(this.editedEmployee.departmentId);
+    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (filteredRoles) => {
@@ -137,7 +137,7 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   /** When department selection changes update the filteredRoles */
   changeFilteredRoles(event: CustomEvent): void {
     this.filteredRolesLoading = true;
-    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentID)
+    this._roleService.getRolesFromDepartmentId(this.editedEmployee.departmentId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (filteredRoles) => {
@@ -159,7 +159,7 @@ export class EmployeeEditModalComponent implements OnInit, OnDestroy {
   /** Confirm save and close modal */
   confirm() {
     this.saveChanges();
-    return this.modalCtrl.dismiss(this.employeeID, 'confirm');
+    return this.modalCtrl.dismiss(this.employeeId, 'confirm');
   }
 
   /** save Changes */

@@ -32,7 +32,7 @@ export class EmployeeService {
 
   /** Update existing Employee based on id */
   updateEmployee(employee: Employee): Observable<void> {
-    return this.http.put<void>(`${apiUrl}/${employee.employeeID}`, employee);
+    return this.http.put<void>(`${apiUrl}/${employee.employeeId}`, employee);
   }
 
   /** Delete Employee based on id */

@@ -40,9 +40,9 @@ import { ToastService } from 'src/app/services/toast.service';
   ]
 })
 export class DepartmentEditModalComponent implements OnInit, OnDestroy {
-  @Input() departmentID: number = -1;
-  originalDepartment: Department = {departmentID: -1, departmentName: ""};
-  editedDepartment: Department = {departmentID: -1, departmentName: ""};
+  @Input() departmentId: number = -1;
+  originalDepartment: Department = {departmentId: -1, departmentName: ""};
+  editedDepartment: Department = {departmentId: -1, departmentName: ""};
 
   departmentLoading: boolean = false;
   departmentSaving: boolean = false;
@@ -61,7 +61,7 @@ export class DepartmentEditModalComponent implements OnInit, OnDestroy {
   /** Get Department */
   getDepartment(): void {
     this.departmentLoading = true;
-    this._departmentService.getDepartmentById(this.departmentID)
+    this._departmentService.getDepartmentById(this.departmentId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (dept) => {
@@ -91,7 +91,7 @@ export class DepartmentEditModalComponent implements OnInit, OnDestroy {
   /** Confirm save */
   confirm() {
     this.saveChanges();
-    return this.modalCtrl.dismiss(this.departmentID, 'confirm');
+    return this.modalCtrl.dismiss(this.departmentId, 'confirm');
   }
 
   /** Save Changes */

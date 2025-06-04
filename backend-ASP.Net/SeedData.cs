@@ -9,30 +9,30 @@ namespace JanTaskTracker.Server
         {
             // Seed Departments
             modelBuilder.Entity<Department>().HasData(
-                new Department { DepartmentID = 1, DepartmentName = "Finance" },
-                new Department { DepartmentID = 2, DepartmentName = "Human Resources" },
-                new Department { DepartmentID = 3, DepartmentName = "Information Technology" }
+                new Department { DepartmentId = 1, DepartmentName = "Finance" },
+                new Department { DepartmentId = 2, DepartmentName = "Human Resources" },
+                new Department { DepartmentId = 3, DepartmentName = "Information Technology" }
                 );
 
             // Seed Roles
             modelBuilder.Entity<Role>().HasData(
-                new Role { RoleID = 1, RoleName = "Accountant", DepartmentID = 1 },
-                new Role { RoleID = 2, RoleName = "Financial Analyst", DepartmentID = 1 },
-                new Role { RoleID = 3, RoleName = "Finance Manager", DepartmentID = 1 },
-                new Role { RoleID = 4, RoleName = "HR Assistant", DepartmentID = 2 },
-                new Role { RoleID = 5, RoleName = "HR Specialist", DepartmentID = 2 },
-                new Role { RoleID = 6, RoleName = "HR Director", DepartmentID = 2 },
-                new Role { RoleID = 7, RoleName = "Software Engineer", DepartmentID = 3 },
-                new Role { RoleID = 8, RoleName = "Front-End Developer", DepartmentID = 3 },
-                new Role { RoleID = 9, RoleName = "Back-End Developer", DepartmentID = 3 },
-                new Role { RoleID = 10, RoleName = "Full-Stack Developer", DepartmentID = 3 }
+                new Role { RoleId = 1, RoleName = "Accountant", DepartmentId = 1 },
+                new Role { RoleId = 2, RoleName = "Financial Analyst", DepartmentId = 1 },
+                new Role { RoleId = 3, RoleName = "Finance Manager", DepartmentId = 1 },
+                new Role { RoleId = 4, RoleName = "HR Assistant", DepartmentId = 2 },
+                new Role { RoleId = 5, RoleName = "HR Specialist", DepartmentId = 2 },
+                new Role { RoleId = 6, RoleName = "HR Director", DepartmentId = 2 },
+                new Role { RoleId = 7, RoleName = "Software Engineer", DepartmentId = 3 },
+                new Role { RoleId = 8, RoleName = "Front-End Developer", DepartmentId = 3 },
+                new Role { RoleId = 9, RoleName = "Back-End Developer", DepartmentId = 3 },
+                new Role { RoleId = 10, RoleName = "Full-Stack Developer", DepartmentId = 3 }
                 );
 
             // Seed Roles
             modelBuilder.Entity<Employee>().HasData(
-                new Employee { EmployeeID = 1, Name = "Bob Smith", Salary = 70000, DepartmentID = 1, RoleID = 2 },
-                new Employee { EmployeeID = 2, Name = "Catherine Green", Salary = 65000, DepartmentID = 2, RoleID = 5 },
-                new Employee { EmployeeID = 3, Name = "David Brown", Salary = 90000, DepartmentID = 3, RoleID = 7 }
+                new Employee { EmployeeId = 1, Name = "Bob Smith", Salary = 70000, DepartmentId = 1, RoleId = 2 },
+                new Employee { EmployeeId = 2, Name = "Catherine Green", Salary = 65000, DepartmentId = 2, RoleId = 5 },
+                new Employee { EmployeeId = 3, Name = "David Brown", Salary = 90000, DepartmentId = 3, RoleId = 7 }
                 );
 
             // Seed Projects

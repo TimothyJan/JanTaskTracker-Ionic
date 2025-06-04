@@ -41,7 +41,7 @@ namespace JanTaskTracker.Server.Controllers
                 var role = await _repository.GetRoleByIdAsync(id);
                 if (role == null)
                 {
-                    return NotFound(new { message = $"Role with ID {id} not found." });
+                    return NotFound(new { message = $"Role with Id {id} not found." });
                 }
                 return Ok(role);
             }
@@ -49,7 +49,7 @@ namespace JanTaskTracker.Server.Controllers
             {
                 return StatusCode(500, new
                 {
-                    message = $"An error occurred while retrieving role with ID {id}.",
+                    message = $"An error occurred while retrieving role with Id {id}.",
                     error = ex.Message
                 });
             }
@@ -59,7 +59,7 @@ namespace JanTaskTracker.Server.Controllers
         public async Task<ActionResult<RoleDTO>> CreateRole(RoleDTO roleDto)
         {
             // Check for duplicate role name in the same department
-            if (await _repository.CheckDuplicateNameAsync(roleDto.RoleName, roleDto.DepartmentID))
+            if (await _repository.CheckDuplicateNameAsync(roleDto.RoleName, roleDto.DepartmentId))
             {
                 return Conflict(new
                 {
@@ -69,10 +69,10 @@ namespace JanTaskTracker.Server.Controllers
 
             await _repository.CreateRoleAsync(roleDto);
 
-            // Now we can just return the DTO we already have (with the updated ID)
+            // Now we can just return the DTO we already have (with the updated Id)
             return CreatedAtAction(
                 nameof(GetRoleById),
-                new { id = roleDto.RoleID },
+                new { id = roleDto.RoleId },
                 roleDto);
         }
 
@@ -81,24 +81,24 @@ namespace JanTaskTracker.Server.Controllers
         {
             try
             {
-                if (id != roleDto.RoleID)
+                if (id != roleDto.RoleId)
                 {
-                    return BadRequest(new { message = "Role ID mismatch." });
+                    return BadRequest(new { message = "Role Id mismatch." });
                 }
 
                 var existingRole = await _repository.GetRoleByIdAsync(id);
                 if (existingRole == null)
                 {
-                    return NotFound(new { message = $"Role with ID {id} not found." });
+                    return NotFound(new { message = $"Role with Id {id} not found." });
                 }
 
                 if (existingRole.RoleName != roleDto.RoleName ||
-                    existingRole.DepartmentID != roleDto.DepartmentID)
+                    existingRole.DepartmentId != roleDto.DepartmentId)
                 {
                     if (await _repository.CheckDuplicateNameAsync(
                         roleDto.RoleName,
-                        roleDto.DepartmentID,
-                        roleDto.RoleID))
+                        roleDto.DepartmentId,
+                        roleDto.RoleId))
                     {
                         return Conflict(new
                         {
@@ -115,7 +115,7 @@ namespace JanTaskTracker.Server.Controllers
             {
                 return StatusCode(500, new
                 {
-                    message = $"An error occurred while updating role with ID {id}.",
+                    message = $"An error occurred while updating role with Id {id}.",
                     error = ex.Message
                 });
             }
@@ -129,7 +129,7 @@ namespace JanTaskTracker.Server.Controllers
                 var roleExists = await _repository.GetRoleByIdAsync(id) != null;
                 if (!roleExists)
                 {
-                    return NotFound(new { message = $"Role with ID {id} not found." });
+                    return NotFound(new { message = $"Role with Id {id} not found." });
                 }
 
                 await _repository.DeleteRoleAsync(id);
@@ -139,7 +139,7 @@ namespace JanTaskTracker.Server.Controllers
             {
                 return StatusCode(500, new
                 {
-                    message = $"An error occurred while deleting role with ID {id}.",
+                    message = $"An error occurred while deleting role with Id {id}.",
                     error = ex.Message
                 });
             }
@@ -153,7 +153,7 @@ namespace JanTaskTracker.Server.Controllers
                 var roles = await _repository.GetRolesByDepartmentIdAsync(departmentId);
                 if (roles == null || !roles.Any())
                 {
-                    return NotFound(new { message = $"No roles found for department ID {departmentId}." });
+                    return NotFound(new { message = $"No roles found for department Id {departmentId}." });
                 }
                 return Ok(roles);
             }
@@ -161,7 +161,7 @@ namespace JanTaskTracker.Server.Controllers
             {
                 return StatusCode(500, new
                 {
-                    message = $"An error occurred while retrieving roles for department ID {departmentId}.",
+                    message = $"An error occurred while retrieving roles for department Id {departmentId}.",
                     error = ex.Message
                 });
             }

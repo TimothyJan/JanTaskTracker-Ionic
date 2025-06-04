@@ -32,7 +32,7 @@ namespace JanTaskTracker.Server.Repositories
             await _context.ProjectTasks.AddAsync(task);
             await _context.SaveChangesAsync();
 
-            // Update the DTO with the generated ID
+            // Update the DTO with the generated Id
             taskDto.ProjectTaskId = task.ProjectTaskId;
         }
 

@@ -33,8 +33,8 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 
 export class ProjectsComponent implements OnInit, OnDestroy {
-  listOfProjectIDs: number[] = [];
-  listOfProjectIDsLoading: boolean = false;
+  listOfProjectIds: number[] = [];
+  listOfProjectIdsLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -52,19 +52,19 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Get list of ProjectIDs */
+  /** Get list of ProjectIds */
   getListOfProjectIds(): void {
-    this.listOfProjectIDsLoading = true;
+    this.listOfProjectIdsLoading = true;
     this._projectService.getListOfProjectIds()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (data) => {
-          this.listOfProjectIDs = data;
-          this.listOfProjectIDsLoading = false;
+          this.listOfProjectIds = data;
+          this.listOfProjectIdsLoading = false;
         },
         error: (error) => {
           this._toastService.presentErrorToast(error.message);
-          this.listOfProjectIDsLoading = false;
+          this.listOfProjectIdsLoading = false;
         }
       })
   }

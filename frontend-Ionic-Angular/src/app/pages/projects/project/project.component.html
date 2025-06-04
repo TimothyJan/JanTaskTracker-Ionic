@@ -39,11 +39,11 @@
   </ion-card-header>
 
   <ion-card-content *ngIf="!projectLoading; else loadingBlock">
-    <div *ngIf="!listOfProjectTaskIDsLoading; else loadingBlock">
-      <div *ngIf="listOfProjectTaskIDs.length>0; else noProjectTasksBlock">
-        <ion-list class="ion-text-center" *ngFor="let projectTaskID of listOfProjectTaskIDs">
+    <div *ngIf="!listOfProjectTaskIdsLoading; else loadingBlock">
+      <div *ngIf="listOfProjectTaskIds.length>0; else noProjectTasksBlock">
+        <ion-list class="ion-text-center" *ngFor="let projectTaskId of listOfProjectTaskIds">
           <ion-item>
-            <app-project-task [projectTaskID]="projectTaskID"></app-project-task>
+            <app-project-task [projectTaskId]="projectTaskId"></app-project-task>
           </ion-item>
         </ion-list>
       </div>

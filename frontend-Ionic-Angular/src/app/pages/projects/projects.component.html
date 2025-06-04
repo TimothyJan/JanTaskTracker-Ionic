@@ -1,15 +1,15 @@
 <app-sidemenu [title]="'Projects'"></app-sidemenu>
 
-<ion-content class="ion-padding" *ngIf="!listOfProjectIDsLoading; else loadingBlock">
+<ion-content class="ion-padding" *ngIf="!listOfProjectIdsLoading; else loadingBlock">
 
   <div class="ion-text-center">
     <ion-button (click)="openProjectCreateModal()">Create New Project</ion-button>
   </div>
 
-  <div *ngIf="listOfProjectIDs.length>0; else noProjectBlock">
-    <ion-list *ngFor="let projectID of listOfProjectIDs">
+  <div *ngIf="listOfProjectIds.length>0; else noProjectBlock">
+    <ion-list *ngFor="let projectId of listOfProjectIds">
       <ion-item>
-        <app-project [projectID]="projectID"></app-project>
+        <app-project [projectId]="projectId"></app-project>
       </ion-item>
     </ion-list>
   </div>

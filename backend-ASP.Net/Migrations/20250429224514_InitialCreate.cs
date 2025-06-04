@@ -17,13 +17,13 @@ namespace JanTaskTrackerAPI.Migrations
                 name: "Departments",
                 columns: table => new
                 {
-                    DepartmentID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DepartmentName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentID);
+                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,19 +66,19 @@ namespace JanTaskTrackerAPI.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    RoleID = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DepartmentID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.RoleID);
+                    table.PrimaryKey("PK_Roles", x => x.RoleId);
                     table.ForeignKey(
-                        name: "FK_Roles_Departments_DepartmentID",
-                        column: x => x.DepartmentID,
+                        name: "FK_Roles_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "DepartmentID",
+                        principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -86,33 +86,33 @@ namespace JanTaskTrackerAPI.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    EmployeeID = table.Column<int>(type: "int", nullable: false)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DepartmentID = table.Column<int>(type: "int", nullable: false),
-                    RoleID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.EmployeeID);
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
                     table.ForeignKey(
-                        name: "FK_Employees_Departments_DepartmentID",
-                        column: x => x.DepartmentID,
+                        name: "FK_Employees_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "DepartmentID",
+                        principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Employees_Roles_RoleID",
-                        column: x => x.RoleID,
+                        name: "FK_Employees_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "RoleID",
+                        principalColumn: "RoleId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
                 table: "Departments",
-                columns: new[] { "DepartmentID", "DepartmentName" },
+                columns: new[] { "DepartmentId", "DepartmentName" },
                 values: new object[,]
                 {
                     { 1, "Finance" },
@@ -142,7 +142,7 @@ namespace JanTaskTrackerAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "RoleID", "DepartmentID", "RoleName" },
+                columns: new[] { "RoleId", "DepartmentId", "RoleName" },
                 values: new object[,]
                 {
                     { 1, 1, "Accountant" },
@@ -159,7 +159,7 @@ namespace JanTaskTrackerAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "EmployeeID", "DepartmentID", "Name", "RoleID", "Salary" },
+                columns: new[] { "EmployeeId", "DepartmentId", "Name", "RoleId", "Salary" },
                 values: new object[,]
                 {
                     { 1, 1, "Bob Smith", 2, 70000m },
@@ -168,19 +168,19 @@ namespace JanTaskTrackerAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_DepartmentID",
+                name: "IX_Employees_DepartmentId",
                 table: "Employees",
-                column: "DepartmentID");
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_RoleID",
+                name: "IX_Employees_RoleId",
                 table: "Employees",
-                column: "RoleID");
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Roles_DepartmentID",
+                name: "IX_Roles_DepartmentId",
                 table: "Roles",
-                column: "DepartmentID");
+                column: "DepartmentId");
         }
 
         /// <inheritdoc />

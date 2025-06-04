@@ -1150,7 +1150,7 @@
       "DepartmentDTO": {
         "type": "object",
         "properties": {
-          "departmentID": {
+          "departmentId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1164,7 +1164,7 @@
       "EmployeeDTO": {
         "type": "object",
         "properties": {
-          "employeeID": {
+          "employeeId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1176,11 +1176,11 @@
             "type": "number",
             "format": "double"
           },
-          "departmentID": {
+          "departmentId": {
             "type": "integer",
             "format": "int32"
           },
-          "roleID": {
+          "roleId": {
             "type": "integer",
             "format": "int32"
           }
@@ -1266,7 +1266,7 @@
       "RoleDTO": {
         "type": "object",
         "properties": {
-          "roleID": {
+          "roleId": {
             "type": "integer",
             "format": "int32"
           },
@@ -1274,7 +1274,7 @@
             "type": "string",
             "nullable": true
           },
-          "departmentID": {
+          "departmentId": {
             "type": "integer",
             "format": "int32"
           }

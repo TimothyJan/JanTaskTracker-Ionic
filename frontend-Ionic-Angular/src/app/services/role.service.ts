@@ -20,9 +20,9 @@ export class RoleService {
     return this.http.get<Role[]>(apiUrl)
   }
 
-  /** Get Roles based on DepartmenIDd */
-  getRolesFromDepartmentId(departmentID: number): Observable<Role[]> {
-    return this.http.get<Role[]>(`${apiUrl}/department/${departmentID}/roles`)
+  /** Get Roles based on DepartmenIdd */
+  getRolesFromDepartmentId(departmentId: number): Observable<Role[]> {
+    return this.http.get<Role[]>(`${apiUrl}/department/${departmentId}/roles`)
   }
 
   /** Get Role based on id */
@@ -31,13 +31,13 @@ export class RoleService {
   }
 
   /** Post new Role */
-  createRole(roleData: {roleName: string, departmentID: number}): Observable<void> {
+  createRole(roleData: {roleName: string, departmentId: number}): Observable<void> {
     return this.http.post<void>(apiUrl, roleData);
   }
 
   /** Update existing Role based on id */
   updateRole(role: Role): Observable<void> {
-    return this.http.put<void>(`${apiUrl}/${role.roleID}`, role)
+    return this.http.put<void>(`${apiUrl}/${role.roleId}`, role)
   }
 
   /** Delete Role based on id */
@@ -46,7 +46,7 @@ export class RoleService {
   }
 
   /** Checks for duplicate role names */
-  checkDuplicates(name: string, departmentID: number): Observable<boolean> {
+  checkDuplicates(name: string, departmentId: number): Observable<boolean> {
     return this.http.get<boolean>(`${apiUrl}/check-duplicate?name=${name}`);
   }
 

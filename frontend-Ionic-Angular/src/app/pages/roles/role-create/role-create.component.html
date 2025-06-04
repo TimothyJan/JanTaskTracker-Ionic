@@ -11,11 +11,11 @@
 
       <ion-select
         *ngIf="!departmentsLoading; else loadingBlock"
-        id="departmentID"
-        formControlName="departmentID"
+        id="departmentId"
+        formControlName="departmentId"
         placeholder="Select a Department">
         <div slot="label">Department</div>
-        <ion-select-option *ngFor="let department of departments" [value]="department.departmentID">
+        <ion-select-option *ngFor="let department of departments" [value]="department.departmentId">
           {{ department.departmentName }}
         </ion-select-option>
       </ion-select>

@@ -33,7 +33,7 @@ export class DepartmentService {
 
   /** Update existing Department based on id */
   updateDepartment(department: Department): Observable<void> {
-    return this.http.put<void>(`${apiUrl}/${department.departmentID}`, department);
+    return this.http.put<void>(`${apiUrl}/${department.departmentId}`, department);
   }
 
   /** Delete Department based on id */

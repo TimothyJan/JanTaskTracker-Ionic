@@ -22,13 +22,13 @@ namespace JanTaskTracker.Server
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees) // Navigation property for Employees
-                .HasForeignKey(e => e.DepartmentID)
+                .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes for Departments
 
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Role)
                 .WithMany(r => r.Employees) // Ensure Role has navigation property for Employees
-                .HasForeignKey(e => e.RoleID)
+                .HasForeignKey(e => e.RoleId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes for Roles
 
             modelBuilder.Entity<Employee>().Property(e => e.Salary).HasColumnType("decimal(18, 2)");
@@ -36,7 +36,7 @@ namespace JanTaskTracker.Server
             modelBuilder.Entity<Role>()
                 .HasOne(r => r.Department)
                 .WithMany(d => d.Roles) // Ensure Department has navigation property for Roles
-                .HasForeignKey(r => r.DepartmentID)
+                .HasForeignKey(r => r.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes for Roles
 
             modelBuilder.Entity<Project>(entity =>

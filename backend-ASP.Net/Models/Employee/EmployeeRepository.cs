@@ -16,11 +16,11 @@ namespace JanTaskTracker.Server.Models
             return await _context.Employees
                 .Select(e => new EmployeeDTO
                 {
-                    EmployeeID = e.EmployeeID,
+                    EmployeeId = e.EmployeeId,
                     Name = e.Name,
                     Salary = e.Salary,
-                    DepartmentID = e.DepartmentID,
-                    RoleID = e.RoleID
+                    DepartmentId = e.DepartmentId,
+                    RoleId = e.RoleId
                 })
                 .ToListAsync();
         }
@@ -32,11 +32,11 @@ namespace JanTaskTracker.Server.Models
 
             return new EmployeeDTO
             {
-                EmployeeID = employee.EmployeeID,
+                EmployeeId = employee.EmployeeId,
                 Name = employee.Name,
                 Salary = employee.Salary,
-                DepartmentID = employee.DepartmentID,
-                RoleID = employee.RoleID
+                DepartmentId = employee.DepartmentId,
+                RoleId = employee.RoleId
             };
         }
 
@@ -46,8 +46,8 @@ namespace JanTaskTracker.Server.Models
             {
                 Name = employeeDto.Name,
                 Salary = employeeDto.Salary,
-                DepartmentID = employeeDto.DepartmentID,
-                RoleID = employeeDto.RoleID
+                DepartmentId = employeeDto.DepartmentId,
+                RoleId = employeeDto.RoleId
             };
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
@@ -55,13 +55,13 @@ namespace JanTaskTracker.Server.Models
 
         public async Task UpdateEmployeeAsync(EmployeeDTO employeeDto)
         {
-            var employee = await _context.Employees.FindAsync(employeeDto.EmployeeID);
+            var employee = await _context.Employees.FindAsync(employeeDto.EmployeeId);
             if (employee == null) return;
 
             employee.Name = employeeDto.Name;
             employee.Salary = employeeDto.Salary;
-            employee.DepartmentID = employeeDto.DepartmentID;
-            employee.RoleID = employeeDto.RoleID;
+            employee.DepartmentId = employeeDto.DepartmentId;
+            employee.RoleId = employeeDto.RoleId;
 
             await _context.SaveChangesAsync();
         }

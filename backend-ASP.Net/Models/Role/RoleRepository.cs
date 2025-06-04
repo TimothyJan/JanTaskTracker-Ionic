@@ -16,9 +16,9 @@ namespace JanTaskTracker.Server.Models
             return await _context.Roles
                 .Select(r => new RoleDTO
                 {
-                    RoleID = r.RoleID,
+                    RoleId = r.RoleId,
                     RoleName = r.RoleName,
-                    DepartmentID = r.DepartmentID
+                    DepartmentId = r.DepartmentId
                 })
                 .ToListAsync();
         }
@@ -30,9 +30,9 @@ namespace JanTaskTracker.Server.Models
 
             return new RoleDTO
             {
-                RoleID = role.RoleID,
+                RoleId = role.RoleId,
                 RoleName = role.RoleName,
-                DepartmentID = role.DepartmentID
+                DepartmentId = role.DepartmentId
             };
         }
 
@@ -44,13 +44,13 @@ namespace JanTaskTracker.Server.Models
                 var role = new Role
                 {
                     RoleName = roleDto.RoleName,
-                    DepartmentID = roleDto.DepartmentID
+                    DepartmentId = roleDto.DepartmentId
                 };
 
                 _context.Roles.Add(role);
                 await _context.SaveChangesAsync();
 
-                roleDto.RoleID = role.RoleID;
+                roleDto.RoleId = role.RoleId;
                 await transaction.CommitAsync();
             }
             catch
@@ -62,11 +62,11 @@ namespace JanTaskTracker.Server.Models
 
         public async Task UpdateRoleAsync(RoleDTO roleDto)
         {
-            var role = await _context.Roles.FindAsync(roleDto.RoleID);
+            var role = await _context.Roles.FindAsync(roleDto.RoleId);
             if (role == null) return;
 
             role.RoleName = roleDto.RoleName;
-            role.DepartmentID = roleDto.DepartmentID;
+            role.DepartmentId = roleDto.DepartmentId;
 
             await _context.SaveChangesAsync();
         }
@@ -83,12 +83,12 @@ namespace JanTaskTracker.Server.Models
         public async Task<IEnumerable<RoleDTO>> GetRolesByDepartmentIdAsync(int departmentId)
         {
             return await _context.Roles
-                .Where(r => r.DepartmentID == departmentId)
+                .Where(r => r.DepartmentId == departmentId)
                 .Select(r => new RoleDTO
                 {
-                    RoleID = r.RoleID,
+                    RoleId = r.RoleId,
                     RoleName = r.RoleName,
-                    DepartmentID = r.DepartmentID
+                    DepartmentId = r.DepartmentId
                 })
                 .ToListAsync();
         }
@@ -100,12 +100,12 @@ namespace JanTaskTracker.Server.Models
 
             if (departmentId.HasValue)
             {
-                query = query.Where(r => r.DepartmentID == departmentId.Value);
+                query = query.Where(r => r.DepartmentId == departmentId.Value);
             }
 
             if (excludeRoleId.HasValue)
             {
-                query = query.Where(r => r.RoleID != excludeRoleId.Value);
+                query = query.Where(r => r.RoleId != excludeRoleId.Value);
             }
 
             return await query.AnyAsync();

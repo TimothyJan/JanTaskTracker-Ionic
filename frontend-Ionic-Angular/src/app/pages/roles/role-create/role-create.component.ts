@@ -46,7 +46,7 @@ export class RoleCreateComponent implements OnInit, OnDestroy {
 
   roleForm: FormGroup = new FormGroup({
     roleName: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
-    departmentID: new FormControl(null, Validators.required)
+    departmentId: new FormControl(null, Validators.required)
   });
 
   constructor(
@@ -89,13 +89,13 @@ export class RoleCreateComponent implements OnInit, OnDestroy {
 
     if (this.roleForm.valid) {
       const roleName = this.roleForm.controls["roleName"].value;
-      const departmentID = Number(this.roleForm.value.departmentID);
+      const departmentId = Number(this.roleForm.value.departmentId);
       const roleData = {
         roleName: roleName,
-        departmentID: departmentID
+        departmentId: departmentId
       };
 
-      this._roleService.checkDuplicates(roleName, departmentID)
+      this._roleService.checkDuplicates(roleName, departmentId)
         .pipe(
           takeUntil(this.unsubscribe$),
           switchMap(isDuplicate => {

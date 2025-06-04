@@ -44,10 +44,10 @@ import { ToastService } from 'src/app/services/toast.service';
   ]
 })
 export class RoleEditModalComponent  implements OnInit, OnDestroy {
-  @Input() roleID: number = -1;
+  @Input() roleId: number = -1;
   departments: Department[] = [];
-  originalRole: Role = {roleID: -1, roleName: "", departmentID: -1};
-  editedRole: Role = {roleID: -1, roleName: "", departmentID: -1}; // Working copy
+  originalRole: Role = {roleId: -1, roleName: "", departmentId: -1};
+  editedRole: Role = {roleId: -1, roleName: "", departmentId: -1}; // Working copy
   roleLoading: boolean = false;
   departmentsLoading: boolean = false;
   roleSaving: boolean = false;
@@ -68,7 +68,7 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
   /** Get Employee */
   getRoleById(): void {
     this.roleLoading = true;
-    this._roleService.getRoleById(this.roleID)
+    this._roleService.getRoleById(this.roleId)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: (role) => {
@@ -115,7 +115,7 @@ export class RoleEditModalComponent  implements OnInit, OnDestroy {
   /** Confirm save and close modal */
   confirm() {
     this.saveChanges();
-    return this.modalCtrl.dismiss(this.roleID, 'confirm');
+    return this.modalCtrl.dismiss(this.roleId, 'confirm');
   }
 
   /** Save Changes */

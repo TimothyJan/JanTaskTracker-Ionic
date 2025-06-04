@@ -1,11 +1,11 @@
 export class Role {
-  roleID: number = 0;
+  roleId: number = 0;
   roleName: string = "";
-  departmentID: number = 0;
+  departmentId: number = 0;
 
-  constructor(roleID: number, roleName: string, departmentID: number = 0,) {
-    this.roleID = roleID;
+  constructor(roleId: number, roleName: string, departmentId: number = 0,) {
+    this.roleId = roleId;
     this.roleName = roleName;
-    this.departmentID = departmentID;
+    this.departmentId = departmentId;
   }
 }

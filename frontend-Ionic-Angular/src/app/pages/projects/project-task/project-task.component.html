@@ -1,4 +1,4 @@
-<ion-card class="ion-card" color="light">
+<ion-card class="ion-card" color="light" *ngIf="!deleteProjectTaskLoading; else loadingBlock">
 
   <ion-card-header>
     <ion-grid>
@@ -29,7 +29,7 @@
     </ion-grid>
   </ion-card-header>
 
-  <ion-card-content>
+  <ion-card-content *ngIf="!projectTaskLoading; else loadingBlock">
     <ion-list>
 
       <ion-item>
@@ -47,10 +47,14 @@
       </ion-item>
 
       <ion-item>
-        <app-assigned-employee-list [projectTaskID]="projectTaskID"></app-assigned-employee-list>
+        <app-assigned-employee-list [projectTaskId]="projectTaskId"></app-assigned-employee-list>
       </ion-item>
 
     </ion-list>
 
   </ion-card-content>
 </ion-card>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

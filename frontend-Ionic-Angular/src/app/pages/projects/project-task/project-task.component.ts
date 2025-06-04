@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   IonCard,
   IonCardHeader,
@@ -14,7 +14,8 @@ import {
   IonItem,
   IonText,
   ActionSheetController,
-  ModalController
+  ModalController,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { ellipsisVerticalSharp } from 'ionicons/icons';
@@ -22,6 +23,8 @@ import { ProjectTask } from 'src/app/models/project-task.model';
 import { ProjectTaskService } from 'src/app/services/project-task.service';
 import { AssignedEmployeeListComponent } from '../../../components/assigned-employee-list/assigned-employee-list.component';
 import { ProjectTaskEditModalComponent } from '../../../components/modals/project-task-edit-modal/project-task-edit-modal.component';
+import { Subject, takeUntil } from 'rxjs';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-project-task',
@@ -42,11 +45,12 @@ import { ProjectTaskEditModalComponent } from '../../../components/modals/projec
     IonList,
     IonItem,
     IonText,
-    AssignedEmployeeListComponent
+    AssignedEmployeeListComponent,
+    IonSpinner
 ]
 })
-export class ProjectTaskComponent implements OnInit {
-  @Input() projectTaskID: number = 0;
+export class ProjectTaskComponent implements OnInit, OnDestroy {
+  @Input() projectTaskId: number = 0;
   projectTask: ProjectTask = new ProjectTask(0, 0, "", "", "Not Started");
 
   titleInvalid: boolean = false;
@@ -56,22 +60,44 @@ export class ProjectTaskComponent implements OnInit {
   startDateString: string = '';
   dueDateString: string = '';
 
+  projectTaskLoading: boolean = false;
+  deleteProjectTaskLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
+
   constructor(
     private _projectTaskService: ProjectTaskService,
     private actionSheetCtrl: ActionSheetController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private _toastService: ToastService
   ) {
     addIcons({ ellipsisVerticalSharp });
   }
 
   ngOnInit() {
-    this.getProjectTaskByID();
+    this.getProjectTaskById();
     this.syncDateStrings();
+
+    // Subscription for project task changes
+    this._projectTaskService.projectTasksChanged$.subscribe(() => {
+      this.getProjectTaskById();
+    })
   }
 
-  /** Get ProjectTask by ID */
-  getProjectTaskByID(): void {
-    this.projectTask = this._projectTaskService.getProjectTaskByID(this.projectTaskID);
+  /** Get ProjectTask by Id */
+  getProjectTaskById(): void {
+    this.projectTaskLoading = true;
+    this._projectTaskService.getProjectTaskById(this.projectTaskId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          this.projectTask = data;
+          this.projectTaskLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectTaskLoading = false;
+        }
+      })
 
     // Sync date strings
     this.syncDateStrings();
@@ -124,7 +150,7 @@ export class ProjectTaskComponent implements OnInit {
     const modal = await this.modalCtrl.create({
       component: ProjectTaskEditModalComponent,
       componentProps: {
-        projectTaskID: this.projectTaskID
+        projectTaskId: this.projectTaskId
       }
     });
     modal.present();
@@ -132,16 +158,40 @@ export class ProjectTaskComponent implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.getProjectTaskByID();
+      this.getProjectTaskById();
       // console.log(data, role);
     }
   }
 
   /** Delete ProjectTask */
   onDelete(): void {
-    const confirmDelete = confirm('Are you sure you want to delete this projectTask?');
+    const confirmDelete = confirm('Are you sure you want to delete this Project Task?');
     if (confirmDelete) {
-      this._projectTaskService.deleteProjectTask(this.projectTaskID);
+      this.deleteProjectTaskLoading = true;
+      this._projectTaskService.deleteProjectTask(this.projectTaskId)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (response) => {
+            this._projectTaskService.notifyProjectTasksChanged();
+            this._toastService.presentSuccessToast("Project Task deleted");
+            this.deleteProjectTaskLoading = false;
+
+            // Remove this component from the DOM
+            const element = document.querySelector(`[projectid="${this.projectTaskId}"]`);
+            if (element) {
+              element.remove();
+            }
+          },
+          error: (error) => {
+            this._toastService.presentErrorToast(error.message);
+            this.deleteProjectTaskLoading = false;
+          }
+        })
     }
+  }
+
+  ngOnDestroy(): void {
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
   }
 }

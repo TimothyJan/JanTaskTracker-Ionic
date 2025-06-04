@@ -126,9 +126,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** Get Department name from DepartmentID */
-  getDepartmentName(departmentID: number): string | undefined {
-    const department = this.departments.find(dep => dep.departmentID == departmentID);
+  /** Get Department name from DepartmentId */
+  getDepartmentName(departmentId: number): string | undefined {
+    const department = this.departments.find(dep => dep.departmentId == departmentId);
     return department ? department.departmentName : undefined;
   }
 
@@ -154,9 +154,9 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       })
   }
 
-  /** Get Role name from RoleID */
-  getRoleName(roleID: number) {
-    const role = this.roles.find(role => role.roleID == roleID);
+  /** Get Role name from RoleId */
+  getRoleName(roleId: number) {
+    const role = this.roles.find(role => role.roleId == roleId);
     return role? role.roleName : undefined;
   }
 
@@ -167,12 +167,12 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       buttons: [
         {
           text: 'Edit',
-          handler: () => this.openEmployeeEditModal(employee.employeeID),
+          handler: () => this.openEmployeeEditModal(employee.employeeId),
         },
         {
           text: 'Delete',
           role: 'destructive',
-          handler: () => this.onDelete(employee.employeeID),
+          handler: () => this.onDelete(employee.employeeId),
         },
         {
           text: 'Cancel',
@@ -187,11 +187,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   /** Opens Employee Edit Modal */
-  async openEmployeeEditModal(employeeID: number) {
+  async openEmployeeEditModal(employeeId: number) {
     const modal = await this.modalCtrl.create({
       component: EmployeeEditModalComponent,
       componentProps: {
-        employeeID: employeeID
+        employeeId: employeeId
       }
     });
     modal.present();
@@ -205,11 +205,11 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
   }
 
   /** Deletes Employee */
-  onDelete(employeeID: number): void {
+  onDelete(employeeId: number): void {
     this.deleteEmployeeLoading = true;
     const confirmDelete = confirm('Are you sure you want to delete this employee?');
     if (confirmDelete) {
-      this._employeeService.deleteEmployee(employeeID)
+      this._employeeService.deleteEmployee(employeeId)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: (response) => {

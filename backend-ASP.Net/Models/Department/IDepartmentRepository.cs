@@ -1,6 +1,6 @@
 ﻿namespace JanTaskTracker.Server.Models
 {
-    public interface IDepartmentRepository
+    public interface IdepartmentRepository
     {
         Task<IEnumerable<DepartmentDTO>> GetAllDepartmentsAsync();
         Task<DepartmentDTO> GetDepartmentByIdAsync(int id);

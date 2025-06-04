@@ -51,9 +51,9 @@ import { Subject, takeUntil } from 'rxjs';
 })
 
 export class ProjectComponent implements OnInit, OnDestroy {
-  @Input() projectID: number = 0;
+  @Input() projectId: number = 0;
   project : Project = new Project(0, "", "", "Not Started", new Date(), new Date());
-  listOfProjectTaskIDs: number[] = [];
+  listOfProjectTaskIds: number[] = [];
 
   projectNameInvalid: boolean = false;
   descriptionInvalid: boolean = false;
@@ -62,7 +62,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   dueDateString: string = '';
 
   projectLoading: boolean = false;
-  listOfProjectTaskIDsLoading: boolean = false;
+  listOfProjectTaskIdsLoading: boolean = false;
   deleteProjectLoading: boolean = false;
   private unsubscribe$ = new Subject<void>();
 
@@ -78,23 +78,23 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getProjectById();
-    this.getListOfProjectTaskIDsByProjectId();
+    this.getListOfProjectTaskIdsByProjectId();
 
-    // Add this subscription for project changes
+    // Subscription for project changes
     this._projectService.projectsChanged$.subscribe(() => {
-      this.getProjectById(); // Refresh the project data
+      this.getProjectById();
     });
 
-    // Subscribe to changes in the task list
+    // Subscription for project task list changes
     this._projectTaskService.projectTasksChanged$.subscribe(() => {
-      this.getListOfProjectTaskIDsByProjectId(); // Refresh the list after a task is deleted
+      this.getListOfProjectTaskIdsByProjectId();
     });
   }
 
-  /** Get Project by ID */
+  /** Get Project by Id */
   getProjectById(): void {
     this.projectLoading = true;
-    this._projectService.getProjectById(this.projectID)
+    this._projectService.getProjectById(this.projectId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (data) => {
@@ -109,21 +109,21 @@ export class ProjectComponent implements OnInit, OnDestroy {
       })
   }
 
-  /** Get list of ProjectTaskIDs by ProjectID */
-  getListOfProjectTaskIDsByProjectId(): void {
-    this.listOfProjectTaskIDsLoading = true;
-    this._projectTaskService.getListOfProjectTaskIDsByProjectId(this.projectID)
+  /** Get list of ProjectTaskIds by ProjectId */
+  getListOfProjectTaskIdsByProjectId(): void {
+    this.listOfProjectTaskIdsLoading = true;
+    this._projectTaskService.getListOfProjectTaskIdsByProjectId(this.projectId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (data) => {
-          this.listOfProjectTaskIDs = data;
-          this.listOfProjectTaskIDsLoading = false;
+          this.listOfProjectTaskIds = data;
+          this.listOfProjectTaskIdsLoading = false;
         },
         error: (error) => {
           // console.log(error);
           // this._toastService.presentErrorToast(error.message);
-          this.listOfProjectTaskIDs = [];
-          this.listOfProjectTaskIDsLoading = false;
+          this.listOfProjectTaskIds = [];
+          this.listOfProjectTaskIdsLoading = false;
         }
       })
   }
@@ -163,7 +163,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: ProjectTaskCreateModalComponent,
       componentProps: {
-        projectID: this.projectID
+        projectId: this.projectId
       }
     });
     modal.present();
@@ -180,7 +180,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: ProjectEditModalComponent,
       componentProps: {
-        projectID: this.projectID
+        projectId: this.projectId
       }
     });
     modal.present();
@@ -192,11 +192,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDelete(projectID: number): void {
+  onDelete(projectId: number): void {
     const confirmDelete = confirm('Are you sure you want to delete this project?');
     if (confirmDelete) {
       this.deleteProjectLoading = true;
-      this._projectService.deleteProject(projectID)
+      this._projectService.deleteProject(projectId)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: (response) => {
@@ -205,7 +205,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
             this.deleteProjectLoading = false;
 
             // Remove this component from the DOM
-            const element = document.querySelector(`[projectid="${this.projectID}"]`);
+            const element = document.querySelector(`[projectid="${this.projectId}"]`);
             if (element) {
               element.remove();
             }

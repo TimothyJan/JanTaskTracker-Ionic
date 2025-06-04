@@ -47,7 +47,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 
 export class ProjectEditModalComponent implements OnInit, OnDestroy {
-  @Input() projectID: number = -1;
+  @Input() projectId: number = -1;
 
   originalProject: Project = new Project(-1, "", "", "Not Started", new Date(), new Date());
   editedProject: Project = new Project(-1, "", "", "Not Started", new Date(), new Date());
@@ -66,10 +66,10 @@ export class ProjectEditModalComponent implements OnInit, OnDestroy {
     this.getProject();
   }
 
-  /** Get project with projectID */
+  /** Get project with projectId */
   getProject(): void {
     this.projectLoading = true;
-    this._projectService.getProjectById(this.projectID)
+    this._projectService.getProjectById(this.projectId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (data) => {
@@ -88,7 +88,6 @@ export class ProjectEditModalComponent implements OnInit, OnDestroy {
           this.projectLoading = false;
         }
       })
-
   }
 
   /** Camcel and close modal */
@@ -99,7 +98,7 @@ export class ProjectEditModalComponent implements OnInit, OnDestroy {
   /** Confirm save and close modal */
   confirm() {
     this.saveChanges();
-    return this.modalCtrl.dismiss(this.projectID, 'confirm');
+    return this.modalCtrl.dismiss(this.projectId, 'confirm');
   }
 
   /** Handles projectName change from input component and assigns projectName value to projectForm */

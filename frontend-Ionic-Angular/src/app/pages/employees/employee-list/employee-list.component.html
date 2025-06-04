@@ -33,11 +33,11 @@
               </ion-col>
 
               <ion-col *ngIf="!departmentsLoading; else loadingBlock" size="3" class="ion-align-self-center">
-                {{ getDepartmentName(employee.departmentID) }}
+                {{ getDepartmentName(employee.departmentId) }}
               </ion-col>
 
               <ion-col *ngIf="!roleNameLoading; else loadingBlock" size="3" class="ion-align-self-center">
-                {{ getRoleName(employee.roleID) }}
+                {{ getRoleName(employee.roleId) }}
               </ion-col>
 
               <ion-col size="1">

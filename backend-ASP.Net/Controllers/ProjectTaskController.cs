@@ -59,7 +59,7 @@ namespace JanTaskTracker.Server.Controllers
             var taskIds = await _repository.GetProjectTaskIdsByProjectIdAsync(projectId);
 
             if (taskIds == null || !taskIds.Any())
-                return NotFound($"No tasks found for project with ID {projectId}");
+                return NotFound($"No tasks found for project with Id {projectId}");
 
             return Ok(taskIds);
         }

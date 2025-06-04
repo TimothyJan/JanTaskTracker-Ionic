@@ -5,7 +5,7 @@ namespace JanTaskTracker.Server.Models
     public class Department
     {
         [Key]
-        public int DepartmentID { get; set; }
+        public int DepartmentId { get; set; }
 
         [Required]
         [StringLength(50, ErrorMessage = "Department name cannot exceed 50 characters.")]
