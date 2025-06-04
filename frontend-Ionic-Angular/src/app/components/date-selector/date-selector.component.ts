@@ -43,6 +43,7 @@ export class DateSelectorComponent  implements OnInit {
     this.dateSelected.emit(this.selectedDate);
   }
 
+  /** On datetime change */
   onDateChange(event: any) {
     this.selectedDate = event.detail.value;
     this.dateSelected.emit(this.selectedDate);
