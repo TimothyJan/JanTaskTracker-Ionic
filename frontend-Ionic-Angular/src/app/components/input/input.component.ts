@@ -29,6 +29,7 @@ export class InputComponent implements OnInit{
     this.placeholder = `Enter ${this.label} here`;
   }
 
+  /** On ion-input change */
   onInputChange(event: any) {
     this.value = event.target.value;
     this.valueChanged.emit(this.value);
