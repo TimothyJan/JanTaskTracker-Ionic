@@ -1,77 +1,56 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ProjectTask } from '../models/project-task.model';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.development.';
+
+const apiUrl = `${environment.apiUrl}/projecttask`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectTaskService {
-
   private projectTasksChangedSource = new Subject<void>();  // Emit events when department is added
   projectTasksChanged$ = this.projectTasksChangedSource.asObservable();
 
-  projectTaskID: number = 5;
-
-  private projectTasks: ProjectTask[] = [
-    new ProjectTask(1, 1, 'Task 1', 'Task for Project Alpha', 'Completed', new Date('2024-11-13'), new Date('2024-12-13'), [0,1]),
-    new ProjectTask(2, 1, 'Task 2', 'Another Task for Project Alpha', 'Active', new Date('2024-12-13'), new Date('2025-1-13'), [3]),
-    new ProjectTask(3, 2, 'Task 3', 'Task for Project Beta', 'Completed', new Date('2025-1-13'), new Date('2025-2-13'), [1]),
-    new ProjectTask(4, 2, 'Task 4', 'Another Task for Project Beta', 'Active', new Date('2024-11-13'), new Date('2025-2-13'), [1])
-  ];
-
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   // Get all project tasks
-  getProjectTasks(): ProjectTask[] {
-    return this.projectTasks;
-  }
-
-  getListOfProjectTaskIDsByProjectIDs(projectID: number): number[] {
-    let listOfProjectTaskIDsByProjectIDs: number[] = [];
-    for (var projectTask of this.projectTasks) {
-      if(projectTask.projectID === projectID) {
-        listOfProjectTaskIDsByProjectIDs.push(projectTask.projectTaskID);
-      }
-    }
-    return listOfProjectTaskIDsByProjectIDs;
+  getProjectTasks(): Observable<ProjectTask[]> {
+    return this.http.get<ProjectTask[]>(`${apiUrl}`);
   }
 
   // Get tasks by project ID
-  getTasksByProjectID(projectID: number): ProjectTask[] {
-    return this.projectTasks.filter((task) => task.projectID === projectID);
+  getTasksByProjectId(projectId: number): Observable<ProjectTask[]> {
+    return this.http.get<ProjectTask[]>(`${apiUrl}/project/${projectId}`);
   }
 
   // Get a project task by ID
-  getProjectTaskByID(taskID: number): ProjectTask {
-    return this.projectTasks.find((task) => task.projectTaskID === taskID)!;
+  getProjectTaskById(taskId: number): Observable<ProjectTask> {
+    return this.http.get<ProjectTask>(`${apiUrl}/${taskId}`);
   }
 
-  // Add a new project task
-  createProjectTask(newProjectTask: ProjectTask): void {
-    newProjectTask.projectTaskID = this.projectTaskID++;
-    this.projectTasks.push(newProjectTask);
-    this.projectTasksChangedSource.next();
+  // Create a new project task
+  createProjectTask(newProjectTask: ProjectTask): Observable<ProjectTask> {
+    return this.http.post<ProjectTask>(`${apiUrl}`, newProjectTask);
   }
 
   // Update an existing project task
-  updateProjectTask(updatedTask: ProjectTask): void {
-    const index = this.projectTasks.findIndex((task) => task.projectTaskID === updatedTask.projectTaskID);
-    if (index !== -1) {
-      this.projectTasks[index] = updatedTask;
-      this.projectTasksChangedSource.next();
-    }
+  updateProjectTask(updatedTask: ProjectTask): Observable<void> {
+    return this.http.put<void>(`${apiUrl}/${updatedTask.projectTaskID}`, updatedTask);
   }
 
   // Delete a project task
-  deleteProjectTask(projectTaskID: number): void {
-    const index = this.projectTasks.findIndex(task => task.projectTaskID === projectTaskID);
-    if (index !== -1) {
-      this.projectTasks.splice(index, 1);
-      this.projectTasksChangedSource.next(); // Notify subscribers that the task list has changed
-    }
+  deleteProjectTask(projectTaskId: number): Observable<void> {
+    return this.http.delete<void>(`${apiUrl}/${projectTaskId}`);
   }
 
-  /** Emit events for projectTasks update */
+  // Get a list of project task IDs by project ID
+  getListOfProjectTaskIDsByProjectId(projectId: number): Observable<number[]> {
+    return this.http.get<number[]>(`${apiUrl}/project/${projectId}/tasks`);
+  }
+
+  // Notify subscribers about project tasks update
   notifyProjectTasksChanged(): void {
     this.projectTasksChangedSource.next();
   }
