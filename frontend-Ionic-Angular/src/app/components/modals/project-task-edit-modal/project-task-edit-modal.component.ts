@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   ModalController,
@@ -11,6 +11,7 @@ import {
   IonToolbar,
   IonList,
   IonItem,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { ProjectTask } from 'src/app/models/project-task.model';
 import { ProjectTaskService } from 'src/app/services/project-task.service';
@@ -21,6 +22,7 @@ import { InputComponent } from "../../input/input.component";
 import { TextAreaComponent } from "../../text-area/text-area.component";
 import { DateSelectorComponent } from "../../date-selector/date-selector.component";
 import { AssignEmployeesComponent } from "../../assign-employees/assign-employees.component";
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-project-task-edit-modal',
@@ -42,11 +44,12 @@ import { AssignEmployeesComponent } from "../../assign-employees/assign-employee
     InputComponent,
     TextAreaComponent,
     DateSelectorComponent,
-    AssignEmployeesComponent
+    AssignEmployeesComponent,
+    IonSpinner
 ]
 })
-export class ProjectTaskEditModalComponent implements OnInit {
-  @Input() projectTaskID: number = -1;
+export class ProjectTaskEditModalComponent implements OnInit, OnDestroy {
+  @Input() projectTaskId: number = -1;
 
   originalProjectTask: ProjectTask = new ProjectTask(-1, 0, "", "", "Not Started", new Date(), new Date(), []);
   editedProjectTask: ProjectTask = new ProjectTask(-1, 0, "", "", "Not Started", new Date(), new Date(), []);
@@ -56,6 +59,10 @@ export class ProjectTaskEditModalComponent implements OnInit {
   dueDateString: string = '';
 
   assignedEmployees: Employee[] = [];
+
+  projectTaskLoading: boolean = false;
+  projectTaskSaveLoading: boolean = false;
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -69,14 +76,26 @@ export class ProjectTaskEditModalComponent implements OnInit {
 
   /** Get Project Task */
   getProjectTask(): void {
-    const projectTask = this._projectTaskService.getProjectTaskByID(this.projectTaskID);
-    if (projectTask) {
-      this.originalProjectTask = {...projectTask};
-      this.editedProjectTask = {...projectTask};
-    }
-    else {
-      this._toastService.presentErrorToast("Unable to retrieve project task.");
-    }
+    this.projectTaskLoading = true;
+    this._projectTaskService.getProjectTaskById(this.projectTaskId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (data) => {
+          const projectTask = data;
+          if (projectTask) {
+            this.originalProjectTask = {...projectTask};
+            this.editedProjectTask = {...projectTask};
+          }
+          else {
+            this._toastService.presentErrorToast("Unable to retrieve project task.");
+          }
+          this.projectTaskLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectTaskLoading = false;
+        }
+      })
   }
 
   /** Cancel and close modal */
@@ -87,7 +106,7 @@ export class ProjectTaskEditModalComponent implements OnInit {
   /** Confirm save and close modal */
   confirm() {
     this.saveChanges();
-    return this.modalCtrl.dismiss(this.projectTaskID, 'confirm');
+    return this.modalCtrl.dismiss(this.projectTaskId, 'confirm');
   }
 
   /** Handles title change from input component and assigns title value to editedProjectTask */
@@ -119,16 +138,32 @@ export class ProjectTaskEditModalComponent implements OnInit {
     this.editedProjectTask.dueDate = dateObj;
   }
 
-  /** Handles assign employees change from assign-employees component and assigns list of employeeIDs to editedProjectTaskForm */
-  handleEmployeeSelection(selectedEmployeeIDs: any) {
-    this.editedProjectTask.assignedEmployeeIDs = selectedEmployeeIDs;
+  /** Handles assign employees change from assign-employees component and assigns list of employeeIds to editedProjectTaskForm */
+  handleEmployeeSelection(selectedEmployeeIds: any) {
+    this.editedProjectTask.assignedEmployeeIds = selectedEmployeeIds;
   }
 
   /** Update projectTask */
   saveChanges(): void {
-    this._projectTaskService.updateProjectTask(this.editedProjectTask);
-    this._projectTaskService.notifyProjectTasksChanged();
-    this._toastService.presentSuccessToast("Project task updated.");
+    this.projectTaskSaveLoading = true;
+    this._projectTaskService.updateProjectTask(this.editedProjectTask)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._projectTaskService.notifyProjectTasksChanged();
+          this._toastService.presentSuccessToast("Project Task saved.");
+          this.projectTaskSaveLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectTaskSaveLoading = false;
+        }
+      })
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

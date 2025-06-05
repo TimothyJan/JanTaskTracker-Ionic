@@ -94,7 +94,16 @@ export class ProjectTaskComponent implements OnInit, OnDestroy {
           this.projectTaskLoading = false;
         },
         error: (error) => {
-          this._toastService.presentErrorToast(error.message);
+          if (error.status === 404) {
+            // Task not found - remove this component
+            const element = document.querySelector(`[projecttaskid="${this.projectTaskId}"]`);
+            if (element) {
+              element.remove();
+            }
+          }
+            else {
+              this._toastService.presentErrorToast(error.message);
+            }
           this.projectTaskLoading = false;
         }
       })
@@ -176,8 +185,8 @@ export class ProjectTaskComponent implements OnInit, OnDestroy {
             this._toastService.presentSuccessToast("Project Task deleted");
             this.deleteProjectTaskLoading = false;
 
-            // Remove this component from the DOM
-            const element = document.querySelector(`[projectid="${this.projectTaskId}"]`);
+            // Immediately remove this component from DOM
+            const element = document.querySelector(`[projecttaskid="${this.projectTaskId}"]`);
             if (element) {
               element.remove();
             }

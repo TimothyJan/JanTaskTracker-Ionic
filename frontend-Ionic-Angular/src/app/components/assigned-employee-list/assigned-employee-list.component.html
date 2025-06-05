@@ -5,9 +5,9 @@
         Assigned Employees:
       </ion-list-header>
       <div *ngIf="!rolesLoading; else loadingBlock">
-        <ion-item *ngFor="let employeeID of projectTask.assignedEmployeeIds">
+        <ion-item *ngFor="let employeeId of projectTask.assignedEmployeeIds">
           <ion-text>
-            {{ getEmployeeNameAndRoleNameByEmployeeID(employeeID) }}
+            {{ getEmployeeNameAndRoleNameByEmployeeId(employeeId) }}
           </ion-text>
         </ion-item>
       </div>

@@ -102,7 +102,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
           this.projectLoading = false;
         },
         error: (error) => {
-          console.log(error);
           this._toastService.presentErrorToast(error.message);
           this.projectLoading = false;
         }
@@ -120,8 +119,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
           this.listOfProjectTaskIdsLoading = false;
         },
         error: (error) => {
-          // console.log(error);
-          // this._toastService.presentErrorToast(error.message);
+          this._toastService.presentErrorToast(error.message);
           this.listOfProjectTaskIds = [];
           this.listOfProjectTaskIdsLoading = false;
         }
@@ -211,7 +209,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
             }
           },
           error: (error) => {
-            console.log(error);
             this._toastService.presentErrorToast(error.message);
             this.deleteProjectLoading = false;
           }

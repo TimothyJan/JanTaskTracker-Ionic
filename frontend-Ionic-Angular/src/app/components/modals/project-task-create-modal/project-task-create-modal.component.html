@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-button color="medium" (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
-    <ion-title>Edit Project Task</ion-title>
+    <ion-title>Create Task</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!projectTaskCreateLoading; else loadingBlock">
   <ion-list>
 
     <ion-item>
@@ -49,10 +49,13 @@
 
     <ion-item>
       <app-assign-employees
-        [assignedEmployeeIDs]="projectTaskForm.value.assignedEmployeeIDs"
         (employeesSelectedEvent)="handleEmployeeSelection($event)">
       </app-assign-employees>
     </ion-item>
 
   </ion-list>
 </ion-content>
+
+<ng-template #loadingBlock>
+  <ion-spinner></ion-spinner>
+</ng-template>

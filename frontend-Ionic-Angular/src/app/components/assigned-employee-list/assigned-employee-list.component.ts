@@ -31,7 +31,7 @@ import { ToastService } from 'src/app/services/toast.service';
   ]
 })
 export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
-  @Input() projectTaskID: number = 0;
+  @Input() projectTaskId: number = 0;
   projectTask: ProjectTask = new ProjectTask(0, 0, "", "", "Not Started");
   employees: Employee[] = [];
   roles: Role[] = [];
@@ -49,7 +49,7 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getProjectTaskByID();
+    this.getProjectTaskById();
     this.getEmployees();
     this.getRoles();
 
@@ -57,14 +57,14 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
     this._projectTaskService.projectTasksChanged$
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(() => {
-      this.getProjectTaskByID();
+      this.getProjectTaskById();
     });
   }
 
-  /** Get ProjectTask by ID */
-  getProjectTaskByID(): void {
+  /** Get ProjectTask by Id */
+  getProjectTaskById(): void {
     this.projectTaskLoading = true;
-    this._projectTaskService.getProjectTaskById(this.projectTaskID)
+    this._projectTaskService.getProjectTaskById(this.projectTaskId)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (data) => {
@@ -123,10 +123,10 @@ export class AssignedEmployeeListComponent  implements OnInit, OnDestroy {
       })
   }
 
-  /** Get User by employeeID */
-  getEmployeeNameAndRoleNameByEmployeeID(employeeID: number) {
-    const employee = this.employees.find(emp => emp.employeeID == employeeID);
-    const role = this.roles.find(role => role.roleID == employee?.roleID);
+  /** Get User by employeeId */
+  getEmployeeNameAndRoleNameByEmployeeId(employeeId: number) {
+    const employee = this.employees.find(emp => emp.employeeId == employeeId);
+    const role = this.roles.find(role => role.roleId == employee?.roleId);
     return employee?.name + " - " + role?.roleName;
   }
 

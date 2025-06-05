@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import {
   ModalController,
@@ -10,7 +10,8 @@ import {
   IonTitle,
   IonContent,
   IonList,
-  IonItem
+  IonItem,
+  IonSpinner
 } from '@ionic/angular/standalone';
 import { InputComponent } from "../../input/input.component";
 import { TextAreaComponent } from "../../text-area/text-area.component";
@@ -20,6 +21,7 @@ import { ProjectTaskService } from 'src/app/services/project-task.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { ProjectTask } from 'src/app/models/project-task.model';
 import { AssignEmployeesComponent } from "../../assign-employees/assign-employees.component";
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-project-task-create-modal',
@@ -41,21 +43,25 @@ import { AssignEmployeesComponent } from "../../assign-employees/assign-employee
     TextAreaComponent,
     StatusSelectorComponent,
     DateSelectorComponent,
-    AssignEmployeesComponent
+    AssignEmployeesComponent,
+    IonSpinner
 ]
 })
-export class ProjectTaskCreateModalComponent  implements OnInit {
-  @Input() projectID: number = -1;
+export class ProjectTaskCreateModalComponent  implements OnInit, OnDestroy {
+  @Input() projectId: number = -1;
 
   projectTaskForm: FormGroup = new FormGroup({
-    projectID: new FormControl(0, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
+    projectId: new FormControl(0, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
     title: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
     description: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
     status: new FormControl("", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]),
     startDate: new FormControl(""),
     dueDate: new FormControl(""),
-    assignedEmployeeIDs: new FormControl([]),
+    assignedEmployeeIds: new FormControl([]),
   });
+  projectTaskCreateLoading: boolean = false;
+
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private modalCtrl: ModalController,
@@ -64,7 +70,7 @@ export class ProjectTaskCreateModalComponent  implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.assignProjectID();
+    this.assignProjectId();
   }
 
   /** Camcel and close modal */
@@ -81,9 +87,9 @@ export class ProjectTaskCreateModalComponent  implements OnInit {
     return this.modalCtrl.dismiss('confirm');
   }
 
-  /** Assigns projectID to projectTaskForm */
-  assignProjectID(): void {
-    this.projectTaskForm.controls["projectID"].setValue(this.projectID);
+  /** Assigns projectId to projectTaskForm */
+  assignProjectId(): void {
+    this.projectTaskForm.controls["projectId"].setValue(this.projectId);
   }
 
   /** Handles task change from input component and assigns title to projectTaskForm */
@@ -115,25 +121,41 @@ export class ProjectTaskCreateModalComponent  implements OnInit {
     this.projectTaskForm.controls['dueDate'].setValue(dateObj);
   }
 
-  /** Handles assign employees change from assign-employees component and assigns list of employeeIDs to projectTaskForm */
-  handleEmployeeSelection(selectedEmployeeIDs: any) {
-    this.projectTaskForm.controls['assignedEmployeeIDs'].setValue(selectedEmployeeIDs);
+  /** Handles assign employees change from assign-employees component and assigns list of employeeIds to projectTaskForm */
+  handleEmployeeSelection(selectedEmployeeIds: any) {
+    this.projectTaskForm.controls['assignedEmployeeIds'].setValue(selectedEmployeeIds);
   }
 
   /** Create Project Task */
   createProjectTask(): void {
+    this.projectTaskCreateLoading = true;
     const newProjectTask = new ProjectTask(
       0,
-      this.projectTaskForm.controls["projectID"].value,
+      this.projectTaskForm.controls["projectId"].value,
       this.projectTaskForm.controls["title"].value,
       this.projectTaskForm.controls["description"].value,
       this.projectTaskForm.controls["status"].value,
       this.projectTaskForm.controls["startDate"].value,
       this.projectTaskForm.controls["dueDate"].value,
-      this.projectTaskForm.controls["assignedEmployeeIDs"].value
+      this.projectTaskForm.controls["assignedEmployeeIds"].value
     );
-    this._projectTaskService.createProjectTask(newProjectTask);
-    this._projectTaskService.notifyProjectTasksChanged();
-    this._toastService.presentSuccessToast("Project task created.");
+    this._projectTaskService.createProjectTask(newProjectTask)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this._projectTaskService.notifyProjectTasksChanged();
+          this._toastService.presentSuccessToast("Project task created.");
+          this.projectTaskCreateLoading = false;
+        },
+        error: (error) => {
+          this._toastService.presentErrorToast(error.message);
+          this.projectTaskCreateLoading = false;
+        }
+      })
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

@@ -8,11 +8,9 @@
 
   <div slot="label">Employees: </div>
 
-  <div *ngIf="!employeesLoading; else loadingBlock">
-    <ion-select-option *ngFor="let employee of employees" [value]="employee">
-      {{ employee.name }} - {{ getRoleName(employee.roleID) }}
-    </ion-select-option>
-  </div>
+  <ion-select-option *ngFor="let employee of employees" [value]="employee">
+    {{ employee.name }} - {{ getRoleName(employee.roleId) }}
+  </ion-select-option>
 
 </ion-select>
 

@@ -1,4 +1,4 @@
-<ion-card class="ion-card" color="light" *ngIf="!deleteProjectTaskLoading; else loadingBlock">
+<ion-card class="ion-card" color="light" *ngIf="!deleteProjectTaskLoading; else loadingBlock" [attr.projecttaskid]="projectTaskId">
 
   <ion-card-header>
     <ion-grid>
