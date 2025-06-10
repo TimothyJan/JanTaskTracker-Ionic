@@ -14,7 +14,11 @@
     </ion-list>
   </div>
   <ng-template #noProjectBlock>
-    No Projects
+    <div class="empty-state">
+      <h3>No Projects Found</h3>
+      <p>Get started by creating your first project</p>
+      <ion-button (click)="openProjectCreateModal()">Create Project</ion-button>
+    </div>
   </ng-template>
 
 </ion-content>

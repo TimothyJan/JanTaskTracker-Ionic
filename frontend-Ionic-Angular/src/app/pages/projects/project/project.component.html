@@ -1,15 +1,18 @@
-<ion-card class="ion-card" color="medium" *ngIf="!deleteProjectLoading; else loadingBlock">
-
+<ion-card class="project-card" *ngIf="!deleteProjectLoading; else loadingBlock">
   <ion-card-header>
-    <ion-grid class="ion-no-padding">
-
+    <ion-grid>
       <ion-row>
-        <ion-grid>
-          <ion-row class="ion-justify-content-end">
-            <ion-col size="5" class="ion-align-self-center ion-text-end">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-justify-content">
+            <ion-col size="6" class="ion-align-self-center status">
+              <div *ngIf="project.startDate">
+                {{ project.startDate | date: 'shortDate':'UTC' }} - {{ project.dueDate  | date: 'shortDate':'UTC' }}
+              </div>
+            </ion-col>
+            <ion-col size="4" class="ion-align-self-center ion-text-end status">
               {{ project.status }}
             </ion-col>
-            <ion-col size="1" class="ion-text-end">
+            <ion-col size="2" class="ion-text-end">
               <ion-button fill="clear" size="small" (click)="presentProjectActionSheet()">
                 <ion-icon slot="icon-only" name="ellipsis-vertical-sharp"></ion-icon>
               </ion-button>
@@ -17,41 +20,40 @@
           </ion-row>
         </ion-grid>
       </ion-row>
-
-      <ion-row>
-        <ion-card-title>
-          {{ project.projectName }}
-        </ion-card-title>
-      </ion-row>
-
-      <ion-row *ngIf="project.startDate && project.dueDate" class="date">
-        {{ project.startDate | date: 'shortDate':'UTC' }} - {{ project.dueDate  | date: 'shortDate':'UTC' }}
-        <!-- {{ project.startDate | date: 'shortDate':'PDT' }} - {{ project.dueDate  | date: 'shortDate':'PDT' }} -->
-      </ion-row>
-
-      <ion-row>
-        <ion-col>
-          {{ project.description }}
-        </ion-col>
-      </ion-row>
-
     </ion-grid>
   </ion-card-header>
 
   <ion-card-content *ngIf="!projectLoading; else loadingBlock">
-    <div *ngIf="!listOfProjectTaskIdsLoading; else loadingBlock">
-      <div *ngIf="listOfProjectTaskIds.length>0; else noProjectTasksBlock">
-        <ion-list class="ion-text-center" *ngFor="let projectTaskId of listOfProjectTaskIds">
-          <ion-item>
-            <app-project-task [projectTaskId]="projectTaskId"></app-project-task>
-          </ion-item>
-        </ion-list>
+    <ion-card-title>
+      {{ project.projectName }}
+    </ion-card-title>
+
+    <p class="project-description">{{ project.description }}</p>
+
+    <div class="tasks-section">
+      <div class="tasks-header">
+        <h1>Tasks</h1>
+        <ion-button class="add-task-btn" (click)="openProjectTaskCreateModal()">
+          Add Task
+        </ion-button>
+      </div>
+
+      <div class="task-list">
+        <div *ngIf="!listOfProjectTaskIdsLoading; else loadingBlock">
+          <div *ngIf="listOfProjectTaskIds.length>0; else noProjectTasksBlock">
+            <ion-list class="ion-text-center" *ngFor="let projectTaskId of listOfProjectTaskIds">
+              <ion-item>
+                <app-project-task [projectTaskId]="projectTaskId"></app-project-task>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+
+        <ng-template #noProjectTasksBlock>
+          No Project Tasks
+        </ng-template>
       </div>
     </div>
-
-    <ng-template #noProjectTasksBlock>
-      No Project Tasks
-    </ng-template>
   </ion-card-content>
 </ion-card>
 
