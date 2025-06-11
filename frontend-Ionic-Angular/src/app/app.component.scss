@@ -1,6 +1,9 @@
-/* ===== Global Styles ===== */
+/* ===== Global Variables ===== */
 :root {
+  // Font
   --ion-font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+
+  // Color palette
   --ion-color-primary: #428cff;
   --ion-color-primary-rgb: 66,140,255;
   --ion-color-primary-contrast: #ffffff;
@@ -22,46 +25,25 @@
   --ion-color-tertiary-shade: #5d58e0;
   --ion-color-tertiary-tint: #7974ff;
 
+  // Status colors
   --ion-color-success: #2dd36f;
-  --ion-color-success-rgb: 45,211,111;
-  --ion-color-success-contrast: #ffffff;
-  --ion-color-success-contrast-rgb: 255,255,255;
-  --ion-color-success-shade: #28ba62;
-  --ion-color-success-tint: #42d77d;
-
   --ion-color-warning: #ffc409;
-  --ion-color-warning-rgb: 255,196,9;
-  --ion-color-warning-contrast: #000000;
-  --ion-color-warning-contrast-rgb: 0,0,0;
-  --ion-color-warning-shade: #e0ac08;
-  --ion-color-warning-tint: #ffca22;
-
   --ion-color-danger: #eb445a;
-  --ion-color-danger-rgb: 235,68,90;
-  --ion-color-danger-contrast: #ffffff;
-  --ion-color-danger-contrast-rgb: 255,255,255;
-  --ion-color-danger-shade: #cf3c4f;
-  --ion-color-danger-tint: #ed576b;
-
   --ion-color-medium: #92949c;
-  --ion-color-medium-rgb: 146,148,156;
-  --ion-color-medium-contrast: #ffffff;
-  --ion-color-medium-contrast-rgb: 255,255,255;
-  --ion-color-medium-shade: #808289;
-  --ion-color-medium-tint: #9d9fa6;
-
   --ion-color-light: #f4f5f8;
-  --ion-color-light-rgb: 244,245,248;
-  --ion-color-light-contrast: #000000;
-  --ion-color-light-contrast-rgb: 0,0,0;
-  --ion-color-light-shade: #d7d8da;
-  --ion-color-light-tint: #f5f6f9;
 
+  // Backgrounds
   --ion-background-color: #ffffff;
   --ion-toolbar-background: #ffffff;
   --ion-item-background: #ffffff;
+
+  // Spacing
+  --base-padding: 16px;
+  --card-padding: 12px;
+  --section-gap: 20px;
 }
 
+/* ===== Base Styles ===== */
 h1 {
   font-size: 1.4rem;
   font-weight: 600;
@@ -71,15 +53,18 @@ h1 {
   padding-right: 24px;
 }
 
-/* ===== Layout Styles ===== */
+/* ===== Layout Utilities ===== */
+.p-0 { padding: 0 !important; }
+.m-0 { margin: 0 !important; }
+
+/* ===== Component Styles ===== */
+// Content
 ion-content {
   --background: var(--ion-background-color);
-  --padding-top: 16px;
-  --padding-bottom: 16px;
-  --padding-start: 16px;
-  --padding-end: 16px;
+  --padding: var(--base-padding);
 }
 
+// Header & Toolbar
 ion-header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -90,29 +75,17 @@ ion-toolbar {
   --min-height: 64px;
 }
 
-ion-grid {
-  padding-top: 5px;
-  padding-right: 0px;
-  padding-bottom: 5px;
-  padding-left: 0px;
+// Grid System
+ion-grid, ion-col {
+  padding: 0;
 }
 
-ion-col {
-  padding-top: 0px;
-  padding-right: 0px;
-  padding-bottom: 0px;
-  padding-left: 0px;
-}
-
-/* ===== Card Styles ===== */
+// Cards
 ion-card {
   --background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-top: 10px;
-  margin-right: 0px;
-  margin-bottom: 10px;
-  margin-left: 0px;
+  margin: 10px 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border-left: 4px solid var(--ion-color-primary);
   border-top: 4px solid var(--ion-color-primary);
@@ -121,47 +94,41 @@ ion-card {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   }
+
+  &-header {
+    padding: 0 16px;
+    border-bottom: 1px solid var(--ion-color-light);
+  }
+
+  &-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+  }
+
+  &-content {
+    padding: 0 0 13px;
+  }
 }
 
-ion-card-header {
-  padding-left: 16px;
-  padding-right: 16px;
-  border-bottom: 1px solid var(--ion-color-light);
-}
-
-ion-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--ion-color-primary);
-}
-
-ion-card-content {
-  padding-top: 0px;
-  padding-right: 0px;
-  padding-bottom: 13px;
-  padding-left: 0px;
-}
-
-/* ===== Button Styles ===== */
+// Buttons
 ion-button {
   --border-radius: 8px;
-  // --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --padding-top: 12px;
-  --padding-bottom: 12px;
+  --padding: 12px;
   font-weight: 500;
   text-transform: none;
+
+  &[fill="solid"] {
+    --box-shadow: 0 2px 6px rgba(var(--ion-color-primary-rgb), 0.3);
+  }
+
+  &[fill="outline"] {
+    --border-width: 1px;
+    --border-color: var(--ion-color-primary);
+  }
 }
 
-ion-button[fill="solid"] {
-  --box-shadow: 0 2px 6px rgba(var(--ion-color-primary-rgb), 0.3);
-}
-
-ion-button[fill="outline"] {
-  --border-width: 1px;
-  --border-color: var(--ion-color-primary);
-}
-
-/* ===== Form Element Styles ===== */
+// Form Elements
 ion-item {
   --border-color: var(--ion-color-light);
   --border-radius: 8px;
@@ -170,7 +137,7 @@ ion-item {
   --inner-padding-end: 0;
 }
 
-ion-input, ion-textarea, ion-select {
+ion-input, ion-textarea, ion-select, ion-datetime-button {
   --padding-start: 12px;
   --padding-end: 12px;
   --placeholder-color: var(--ion-color-medium);
@@ -180,19 +147,13 @@ ion-input, ion-textarea, ion-select {
 }
 
 ion-select {
-  --padding-start: 12px;
   --padding-end: 36px;
 }
 
-ion-datetime-button {
-  --padding-start: 12px;
-  --padding-end: 12px;
-}
-
-/* ===== List Styles ===== */
+// Lists
 ion-list {
   background: transparent;
-  padding: 0px;
+  padding: 0;
 }
 
 ion-list-header {
@@ -203,38 +164,37 @@ ion-list-header {
   margin-bottom: 8px;
 }
 
-/* ===== Menu Styles ===== */
+// Menu
 ion-menu {
   --width: 280px;
-}
 
-ion-menu ion-content {
-  --background: var(--ion-item-background);
-}
+  ion-content {
+    --background: var(--ion-item-background);
+  }
 
-ion-menu ion-list {
-  padding: 20px 0;
-}
+  ion-list {
+    padding: 20px 0;
+  }
 
-ion-menu ion-item {
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --min-height: 56px;
-  --background-activated: rgba(var(--ion-color-primary-rgb), 0.1);
-}
+  ion-item {
+    --padding: 16px;
+    --min-height: 56px;
+    --background-activated: rgba(var(--ion-color-primary-rgb), 0.1);
 
-ion-menu ion-item.selected {
-  --background: rgba(var(--ion-color-primary-rgb), 0.1);
-  --color: var(--ion-color-primary);
-}
+    &.selected {
+      --background: rgba(var(--ion-color-primary-rgb), 0.1);
+      --color: var(--ion-color-primary);
+    }
 
-ion-menu ion-item ion-icon {
-  margin-right: 12px;
-  color: var(--ion-color-medium);
-}
+    ion-icon {
+      margin-right: 12px;
+      color: var(--ion-color-medium);
+    }
 
-ion-menu ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
+    &.selected ion-icon {
+      color: var(--ion-color-primary);
+    }
+  }
 }
 
 /* ===== Status Indicators ===== */
@@ -245,114 +205,65 @@ ion-menu ion-item.selected ion-icon {
   border-radius: 12px;
   font-size: 0.75rem;
 
-  &.not-started {
-    background-color: rgba(var(--ion-color-medium-rgb), 0.2);
-    color: var(--ion-color-medium-shade);
+  @each $status, $color in (
+    'not-started': 'medium',
+    'in-progress': 'warning',
+    'completed': 'success',
+    'overdue': 'danger'
+  ) {
+    &.#{$status} {
+      background-color: rgba(var(--ion-color-#{$color}-rgb), 0.2);
+      color: var(--ion-color-#{$color}-shade);
+    }
   }
-
-  &.in-progress {
-    background-color: rgba(var(--ion-color-warning-rgb), 0.2);
-    color: var(--ion-color-warning-shade);
-  }
-
-  &.completed {
-    background-color: rgba(var(--ion-color-success-rgb), 0.2);
-    color: var(--ion-color-success-shade);
-  }
-
-  &.overdue {
-    background-color: rgba(var(--ion-color-danger-rgb), 0.2);
-    color: var(--ion-color-danger-shade);
-  }
-}
-
-/* ===== Date Styles ===== */
-.date {
-  font-size: 0.875rem;
-  color: var(--ion-color-medium);
-  margin: 8px 0;
 }
 
 /* ===== Utility Classes ===== */
-.text-center {
-  text-align: center;
+.text {
+  &-center { text-align: center; }
+  &-muted { color: var(--ion-color-medium); }
 }
 
-.text-muted {
-  color: var(--ion-color-medium);
+// Margin utilities
+@for $i from 1 through 5 {
+  $value: ($i - 1) * 8px;
+
+  .mt-#{$i} { margin-top: $value; }
+  .mb-#{$i} { margin-bottom: $value; }
 }
 
-.mt-1 { margin-top: 4px; }
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 16px; }
-.mt-4 { margin-top: 24px; }
-.mt-5 { margin-top: 32px; }
-
-.mb-1 { margin-bottom: 4px; }
-.mb-2 { margin-bottom: 8px; }
-.mb-3 { margin-bottom: 16px; }
-.mb-4 { margin-bottom: 24px; }
-.mb-5 { margin-bottom: 32px; }
-
-/* ===== Responsive Adjustments ===== */
-@media (min-width: 768px) {
-  ion-content {
-    --padding-start: 24px;
-    --padding-end: 24px;
-  }
-
-  ion-card {
-    margin: 16px;
-  }
-}
-
-@media (min-width: 1024px) {
-  ion-content {
-    --padding-start: 32px;
-    --padding-end: 32px;
-  }
-}
-
-/* ===== Project Section Specific Styles ===== */
-
-/* Projects List Container */
+/* ===== Project Specific Styles ===== */
 .projects-container {
   display: grid;
-  gap: 20px;
-  padding: 16px;
+  gap: var(--section-gap);
+  padding: var(--base-padding);
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    padding: 24px;
+    padding: calc(var(--base-padding) * 1.5);
   }
 
   @media (min-width: 1024px) {
-    padding: 32px;
+    padding: calc(var(--base-padding) * 2);
   }
 }
 
-/* Project Card Enhancements */
-ion-card.project-card {
-  --background: #ffffff;
+.project-card {
+  --border-width: 4px;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  margin: 0;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: visible;
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    border-left-width: 6px;
+    --border-width: 6px;
   }
 
-  ion-card-header {
-    padding-top: 6px;
-    padding-right: 16px;
-    padding-bottom: 0px;
-    padding-left: 16px;
-    border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.15);
+  &-header {
     position: relative;
+    padding: 6px 16px 0;
+    border-bottom: 1px solid rgba(var(--ion-color-medium-rgb), 0.15);
 
     .project-actions {
       position: absolute;
@@ -362,12 +273,10 @@ ion-card.project-card {
     }
   }
 
-  ion-card-title {
+  &-title {
     font-size: 1.4rem;
-    font-weight: 600;
     color: var(--ion-color-dark);
     margin-bottom: 8px;
-    line-height: 1.3;
   }
 
   .project-meta {
@@ -384,32 +293,12 @@ ion-card.project-card {
       border-radius: 20px;
       font-weight: 600;
       letter-spacing: 0.5px;
-
-      &.not-started {
-        background-color: rgba(var(--ion-color-medium-rgb), 0.15);
-        color: var(--ion-color-medium-shade);
-      }
-
-      &.in-progress {
-        background-color: rgba(var(--ion-color-warning-rgb), 0.15);
-        color: var(--ion-color-warning-shade);
-      }
-
-      &.completed {
-        background-color: rgba(var(--ion-color-success-rgb), 0.15);
-        color: var(--ion-color-success-shade);
-      }
-
-      &.overdue {
-        background-color: rgba(var(--ion-color-danger-rgb), 0.15);
-        color: var(--ion-color-danger-shade);
-      }
+      background-color-opacity: 0.15;
     }
   }
 
-  ion-card-content {
-    // padding: 16px 20px;
-    padding: 0px 20px;
+  &-content {
+    padding: 0 20px;
 
     .project-description {
       color: var(--ion-color-medium);
@@ -420,99 +309,31 @@ ion-card.project-card {
   }
 }
 
-/* Tasks Section */
-ion-card.project-task-card {
+.project-task-card {
   @extend .project-card;
-  border-left: 4px solid var(--ion-color-secondary);
-  border-top: 4px solid var(--ion-color-secondary);
+  border-color: var(--ion-color-secondary);
+}
 
-  ion-list-header {
-    color: var(--ion-color-tertiary);
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 767px) {
+  .projects-container {
+    grid-template-columns: 1fr;
   }
 }
 
-.tasks-section {
-  margin-top: 20px;
-  border-top: 1px solid rgba(var(--ion-color-light-rgb), 0.8);
-  padding-top: 16px;
-
-  .tasks-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-
-    h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--ion-color-dark);
-    }
-
-    .add-task-btn {
-      --padding-start: 8px;
-      --padding-end: 8px;
-      --padding-top: 4px;
-      --padding-bottom: 4px;
-      font-size: 0.8rem;
-    }
-  }
-
-  .task-list {
-    display: grid;
-    gap: 12px;
-
-    ion-item {
-      --padding-start: 0;
-      --inner-padding-end: 0;
-      --background: transparent;
-      --border-color: transparent;
-    }
+@media (min-width: 768px) {
+  ion-content {
+    --padding: 24px;
   }
 }
 
-/* Empty State Styles */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--ion-color-medium);
-
-  ion-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    color: var(--ion-color-light-shade);
-  }
-
-  h3 {
-    font-size: 1.2rem;
-    color: var(--ion-color-medium-shade);
-    margin-bottom: 8px;
-  }
-
-  p {
-    font-size: 0.95rem;
-    margin-bottom: 16px;
+@media (min-width: 1024px) {
+  ion-content {
+    --padding: 32px;
   }
 }
 
-/* Floating Action Button */
-.fab-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 10;
-
-  ion-fab-button {
-    --box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-}
-
-/* Animations */
+/* ===== Animations ===== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -525,16 +346,5 @@ ion-card.project-task-card {
     &:nth-child(#{$i}) {
       animation-delay: $i * 0.05s;
     }
-  }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 767px) {
-  .projects-container {
-    grid-template-columns: 1fr;
-  }
-
-  ion-card.project-card {
-    margin-bottom: 16px;
   }
 }

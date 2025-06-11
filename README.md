@@ -1,6 +1,18 @@
 # JanTaskTracker-Ionic
 JanTaskTracker Full-stack project task and employee management app with CRUD functionality for projects, tasks, employees, departments, and roles using ASP.NET Core, Ionic-Angular, and SQL Server.
 
+<br>
+<img src="/screenshots/0-sidemenu.png">
+<br>
+<img src="/screenshots/1-projects.png">
+<br>
+<img src="/screenshots/2-employees.png">
+</br>
+<img src="/screenshots/3-roles.png">
+</br>
+<img src="/screenshots/4-departments.png">
+<br>
+
 Run:
 <ul>
   <li>Frontend
@@ -114,8 +126,8 @@ Process:
     <ul>
       <li>Create models(Department, Role, Employee, Project, ProjectTask).</li>
       <li>Create services to handle communication with the database.</li>
-      <li>Install Bootstap: ~<code>npm install bootstrap</code></li>
-      <li>Create components for project-list and user-list.</li>
+      <li>Create components.</li>
+      <li>Update scss.</li>
     </ul>
   </li>
 </ul>
